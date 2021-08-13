@@ -101,7 +101,11 @@ int main()
 
 	DynamicModuleLoader dllLoader;
 
+#ifdef _DEBUG
 	std::string dll_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/Mediapipe_Hand_Tracking.dll";
+#else
+	std::string dll_path = "./Mediapipe_Hand_Tracking.dll";
+#endif // DEBUG
 
 	if(dllLoader.IsFileExist(dll_path))
 	{
@@ -215,7 +219,11 @@ int main()
 	}
 
 	/* ≥ı ºªØMediapipe Hand Tracking */
+#ifdef _DEBUG
 	std::string mediapipe_hand_tracking_model_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/hand_tracking_desktop_live.pbtxt";
+#else
+	std::string mediapipe_hand_tracking_model_path = "./hand_tracking_desktop_live.pbtxt";
+#endif // _DEBUG
 	
 	if (Mediapipe_Hand_Tracking_Init(mediapipe_hand_tracking_model_path.c_str()))
 	{
