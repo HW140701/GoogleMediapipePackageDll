@@ -26,6 +26,11 @@ EXPORT_API int Mediapipe_Hand_Tracking_Detect_Frame(int image_index, int image_w
 	return m_HandTrackingDetect.DetectFrame(image_index, image_width, image_height, image_data);
 }
 
+EXPORT_API int Mediapipe_Hand_Tracking_Detect_Frame_Direct(int image_width, int image_height, void* image_data,GestureRecognitionResult& gesture_result)
+{
+	return m_HandTrackingDetect.DetectFrame_Direct(image_width, image_height, image_data, gesture_result);
+}
+
 EXPORT_API int Mediapipe_Hand_Tracking_Detect_Video(const char* video_path, int show_image)
 {
 	return m_HandTrackingDetect.DetectVideo(video_path, show_image);

@@ -2,6 +2,7 @@
 
 #include "hand_tracking_detect.h"
 #include "hand_gesture_recognition.h"
+#include "hand_up_hand_down_detect.h"
 
 
 GoogleMediapipeHandTrackingDetect::HandTrackingDetect::HandTrackingDetect()
@@ -65,6 +66,18 @@ int GoogleMediapipeHandTrackingDetect::HandTrackingDetect::DetectFrame(int image
 		return 0;
 
 	absl::Status run_status = Mediapipe_RunMPPGraph(image_index,image_width,image_height,image_data);
+	if (!run_status.ok()) {
+		return 0;
+	}
+	return 1;
+}
+
+int GoogleMediapipeHandTrackingDetect::HandTrackingDetect::DetectFrame_Direct(int image_width, int image_height, void* image_data, GestureRecognitionResult& gesture_result)
+{
+	if (!m_bIsInit)
+		return 0;
+
+	absl::Status run_status = Mediapipe_RunMPPGraph_Direct(image_width, image_height, image_data, gesture_result);
 	if (!run_status.ok()) {
 		return 0;
 	}
@@ -221,6 +234,81 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 
 	return absl::OkStatus();
 }
+
+
+absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_RunMPPGraph_Direct(int image_width, int image_height, void* image_data, GestureRecognitionResult& gesture_result)
+{
+	// 构造cv::Mat对象
+	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3, (uchar*)image_data);
+	cv::cvtColor(camera_frame, camera_frame, cv::COLOR_BGR2RGB);
+	cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+	//std::cout << "图片构建完成" << std::endl;
+
+	// Wrap Mat into an ImageFrame.
+	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
+		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
+		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
+	cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+	camera_frame.copyTo(input_frame_mat);
+	//std::cout << "Wrap Mat into an ImageFrame." << std::endl;
+
+	// Send image packet into the graph.
+	size_t frame_timestamp_us =
+		(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
+
+	MP_RETURN_IF_ERROR(m_Graph.AddPacketToInputStream(
+		m_kInputStream, mediapipe::Adopt(input_frame.release())
+		.At(mediapipe::Timestamp(frame_timestamp_us))));
+	//std::cout << "Send image packet into the graph." << std::endl;
+
+
+	// Get the graph result packet, or stop if that fails.
+	mediapipe::Packet packet;
+	mediapipe::Packet packet_landmarks;
+	if (!m_pPoller->Next(&packet))
+		return absl::OkStatus();
+
+	if (m_pPoller_landmarks->QueueSize() > 0)
+	{
+		if (m_pPoller_landmarks->Next(&packet_landmarks))
+		{
+
+			std::vector<mediapipe::NormalizedLandmarkList> output_landmarks = packet_landmarks.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
+
+			for (int m = 0; m < output_landmarks.size(); ++m)
+			{
+				mediapipe::NormalizedLandmarkList single_hand_NormalizedLandmarkList = output_landmarks[m];
+
+				std::vector<PoseInfo> singleHandGestureInfo;
+				singleHandGestureInfo.clear();
+
+				for (int i = 0; i < single_hand_NormalizedLandmarkList.landmark_size(); ++i)
+				{
+					PoseInfo info;
+					const mediapipe::NormalizedLandmark landmark = single_hand_NormalizedLandmarkList.landmark(i);
+					info.x = landmark.x() * camera_frame.cols;
+					info.y = landmark.y() * camera_frame.rows;
+					singleHandGestureInfo.push_back(info);
+				}
+
+				// 检测手势
+				HandGestureRecognition handGestureRecognition;
+				int gesture_recognition_result = handGestureRecognition.GestureRecognition(singleHandGestureInfo);
+				gesture_result.m_Gesture_Recognition_Result[m] = gesture_recognition_result;
+
+				// 检测举手或者放手
+				HandUpHandDownDetect handupHandDownDetect;
+				int handuphanddown_result = handupHandDownDetect.DetectHandUpOrHandDown(singleHandGestureInfo, image_height);
+				gesture_result.m_HandUp_HandDown_Detect_Result[m] = handuphanddown_result;
+				
+			}
+
+		}
+	}
+
+	return absl::OkStatus();
+}
+
 
 
 absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_RunMPPGraph(const char* video_path, int show_image)

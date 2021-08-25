@@ -10,6 +10,12 @@ typedef PoseInfo Point2D;
 typedef PoseInfo Vector2D;
 
 
+struct GestureRecognitionResult
+{
+	int m_Gesture_Recognition_Result[2] = {-1,-1};
+	int m_HandUp_HandDown_Detect_Result[2] = {-1,-1};
+};
+
 enum Gesture
 {
 	NoGesture = -1,
@@ -22,6 +28,13 @@ enum Gesture
 	ThumbUp = 7,
 	Ok = 8,
 	Fist = 9
+};
+
+enum HandUp_HandDown
+{
+	NoHand = -1,
+	HandUp = 1,
+	HandDown = 2
 };
 
 

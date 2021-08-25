@@ -37,6 +37,7 @@ namespace GoogleMediapipeHandTrackingDetect {
 		int RegisterLandmarksCallback(LandmarksCallBack func);
 		int RegisterGestureResultCallBack(GestureResultCallBack func);
 		int DetectFrame(int image_index, int image_width, int image_height, void* image_data);
+		int DetectFrame_Direct(int image_width, int image_height, void* image_data,GestureRecognitionResult& gesture_result);
 		int DetectVideo(const char* video_path, int show_image);
 		int Release();
 
@@ -44,6 +45,8 @@ namespace GoogleMediapipeHandTrackingDetect {
 		absl::Status Mediapipe_InitGraph(const char* model_path);
 
 		absl::Status Mediapipe_RunMPPGraph(int image_index, int image_width, int image_height, void* image_data);
+
+		absl::Status Mediapipe_RunMPPGraph_Direct(int image_width, int image_height, void* image_data, GestureRecognitionResult& gesture_result);
 
 		absl::Status Mediapipe_RunMPPGraph(const char* video_path, int show_image);
 

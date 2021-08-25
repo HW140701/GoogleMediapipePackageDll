@@ -26,7 +26,7 @@ cc_binary(
 
 cc_binary(
     name = "Mediapipe_Hand_Tracking",
-	srcs = ["hand_tracking_api.h","hand_tracking_api.cpp","hand_tracking_detect.h","hand_tracking_detect.cpp","hand_tracking_data.h","hand_gesture_recognition.h","hand_gesture_recognition.cpp"],
+	srcs = ["hand_tracking_api.h","hand_tracking_api.cpp","hand_tracking_detect.h","hand_tracking_detect.cpp","hand_tracking_data.h","hand_gesture_recognition.h","hand_gesture_recognition.cpp","hand_up_hand_down_detect.h","hand_up_hand_down_detect.cpp"],
     linkshared=True,
 	deps = [
         "//mediapipe/graphs/hand_tracking:desktop_tflite_calculators",

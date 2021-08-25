@@ -23,6 +23,8 @@
 
 
 struct PoseInfo;
+struct GestureRecognitionResult;
+
 
 /*
 @brief 回调手势坐标点回调函数
@@ -39,6 +41,7 @@ typedef void(*LandmarksCallBack)(int image_index, PoseInfo* infos, int count);
 @param[out] count 数组长度，识别结果数量
 */
 typedef void(*GestureResultCallBack)(int image_index, int* recogn_result, int count);
+
 
 
 #ifdef __cplusplus
@@ -90,6 +93,18 @@ extern "C" {
 		1 成功
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Detect_Frame(int image_index, int image_width, int image_height, void* image_data);
+
+	/*
+	@brief 检测视频帧
+	@param[in] image_width 视频帧宽度
+	@param[in] image_height 视频帧高度
+	@param[in] image_data 视频帧数据
+	@param[out] gesture_result - 手势识别结果
+	@return 返回操作成功或者失败
+		0 失败
+		1 成功
+	*/
+	EXPORT_API int Mediapipe_Hand_Tracking_Detect_Frame_Direct(int image_width, int image_height, void* image_data ,GestureRecognitionResult& gesture_result);
 
 
 	/*
