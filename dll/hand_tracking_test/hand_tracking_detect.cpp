@@ -275,6 +275,8 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 
 			std::vector<mediapipe::NormalizedLandmarkList> output_landmarks = packet_landmarks.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
 
+			GestureRecognitionResult tempGestureResult;
+
 			for (int m = 0; m < output_landmarks.size(); ++m)
 			{
 				mediapipe::NormalizedLandmarkList single_hand_NormalizedLandmarkList = output_landmarks[m];
@@ -294,14 +296,16 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 				// 检测手势
 				HandGestureRecognition handGestureRecognition;
 				int gesture_recognition_result = handGestureRecognition.GestureRecognition(singleHandGestureInfo);
-				gesture_result.m_Gesture_Recognition_Result[m] = gesture_recognition_result;
+				tempGestureResult.m_Gesture_Recognition_Result[m] = gesture_recognition_result;
 
 				// 检测举手或者放手
 				HandUpHandDownDetect handupHandDownDetect;
 				int handuphanddown_result = handupHandDownDetect.DetectHandUpOrHandDown(singleHandGestureInfo, image_height);
-				gesture_result.m_HandUp_HandDown_Detect_Result[m] = handuphanddown_result;
+				tempGestureResult.m_HandUp_HandDown_Detect_Result[m] = handuphanddown_result;
 				
 			}
+
+			gesture_result = tempGestureResult;
 
 		}
 	}
