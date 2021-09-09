@@ -1,5 +1,9 @@
 # Google_Mediapipe_Hand_Tracking_dll
 
+![HandTracking](resource/HandTracking.gif)
+
+
+
 # 1 项目简介
 
 将Google Mediapipe中的手部追踪与识别功能封装成动态链接库，通过调用该库可以在桌面应用程序中进行手势识别以及得到手部关节坐标点。
