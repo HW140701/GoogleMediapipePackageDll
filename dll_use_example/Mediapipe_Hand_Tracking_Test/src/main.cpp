@@ -1,38 +1,10 @@
 #include <iostream> 
 #include <opencv2/core/core.hpp> 
-#include<opencv2/highgui/highgui.hpp> 
+#include <opencv2/highgui/highgui.hpp> 
 #include <opencv2/opencv.hpp>
 
-#include "DynamicModuleLoader.h"
-
-using namespace cv;
-using namespace std;
-using namespace DynamicModuleLoaderSpace;
-
-
-struct PoseInfo {
-	float x;
-	float y;
-};
-struct GestureRecognitionResult
-{
-	int m_Gesture_Recognition_Result[2] = { -1,-1 };
-	int m_HandUp_HandDown_Detect_Result[2] = { -1,-1 };
-};
-
-typedef void(*LandmarksCallBack)(int image_index, PoseInfo* infos, int count);
-typedef void(*GestureResultCallBack)(int image_index, int* recogn_result, int count);
-
-
-
-typedef int (*Func_Mediapipe_Hand_Tracking_Init)(const char* model_path);
-typedef int (*Func_Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback)(LandmarksCallBack func);
-typedef int (*Func_Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback)(GestureResultCallBack func);
-typedef int (*Func_Mediapipe_Hand_Tracking_Detect_Frame)(int image_index, int image_width, int image_height, void* image_data);
-typedef int (*Func_Mediapipe_Hand_Tracking_Detect_Frame_Direct)(int image_width, int image_height, void* image_data, GestureRecognitionResult& gesture_result);
-typedef int (*Func_Mediapipe_Hand_Tracking_Detect_Video)(const char* video_path, int show_image);
-typedef int (*Func_Mediapipe_Hand_Tracking_Release)();
-
+#include "MediapipeHandTrackingDll.h"
+#include "MediapipeHolisticTrackingDll.h"
 
 std::string GetGestureResult(int result)
 {
@@ -118,150 +90,17 @@ void GestureResultCallBackImpl(int image_index, int* recogn_result, int count)
 	}
 }
 
-
-int main()
+void HandTrackingDllTest()
 {
-	Func_Mediapipe_Hand_Tracking_Init Mediapipe_Hand_Tracking_Init = nullptr;
-	Func_Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback = nullptr;
-	Func_Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback = nullptr;
-	Func_Mediapipe_Hand_Tracking_Detect_Frame Mediapipe_Hand_Tracking_Detect_Frame = nullptr;
-	Func_Mediapipe_Hand_Tracking_Detect_Frame_Direct Mediapipe_Hand_Tracking_Detect_Frame_Direct = nullptr;
-	Func_Mediapipe_Hand_Tracking_Detect_Video Mediapipe_Hand_Tracking_Detect_Video = nullptr;
-	Func_Mediapipe_Hand_Tracking_Release Mediapipe_Hand_Tracking_Release = nullptr;
-
-	DynamicModuleLoader dllLoader;
-
+	MediapipeHandTrackingDll mediapipeHandTrackingDll;
 #ifdef _DEBUG
 	std::string dll_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/Mediapipe_Hand_Tracking.dll";
 #else
 	std::string dll_path = "./Mediapipe_Hand_Tracking.dll";
 #endif // DEBUG
 
-	if(dllLoader.IsFileExist(dll_path))
-	{
-		std::cout << "dll存在" << std::endl;
-
-		if (dllLoader.LoadDynamicModule(dll_path))
-		{
-			std::cout << "dll加载成功！" << std::endl;
-
-			// 获取Mediapipe_Hand_Tracking_Init
-			void* p_Mediapipe_Hand_Tracking_Init = dllLoader.GetFunction("Mediapipe_Hand_Tracking_Init");
-			if (p_Mediapipe_Hand_Tracking_Init != nullptr)
-			{
-				Mediapipe_Hand_Tracking_Init = (Func_Mediapipe_Hand_Tracking_Init(p_Mediapipe_Hand_Tracking_Init));
-				if (Mediapipe_Hand_Tracking_Init != nullptr)
-				{
-					std::cout << "Mediapipe_Hand_Tracking_Init获取成功" << std::endl;
-				}
-
-			}
-			else
-			{
-				std::cout << "无法在dll中找到Mediapipe_Hand_Tracking_Init" << std::endl;
-			}
-
-			// 获取Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback
-			void* p_Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback = dllLoader.GetFunction("Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback");
-			if (p_Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback != nullptr)
-			{
-				Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback = (Func_Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback(p_Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback));
-				if (Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback != nullptr)
-				{
-					std::cout << "Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback获取成功" << std::endl;
-				}
-			}
-			else
-			{
-				std::cout << "无法在dll中找到Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback" << std::endl;
-			}
-
-			// 获取Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback
-			void* p_Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback = dllLoader.GetFunction("Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback");
-			if (p_Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback != nullptr)
-			{
-				Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback = (Func_Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback(p_Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback));
-				if (Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback != nullptr)
-				{
-					std::cout << "Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback获取成功" << std::endl;
-				}
-			}
-			else
-			{
-				std::cout << "无法在dll中找到Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback" << std::endl;
-			}
-
-			// 获取Mediapipe_Hand_Tracking_Detect_Frame
-			void* p_Mediapipe_Hand_Tracking_Detect_Frame = dllLoader.GetFunction("Mediapipe_Hand_Tracking_Detect_Frame");
-			if (p_Mediapipe_Hand_Tracking_Detect_Frame != nullptr)
-			{
-				Mediapipe_Hand_Tracking_Detect_Frame = (Func_Mediapipe_Hand_Tracking_Detect_Frame(p_Mediapipe_Hand_Tracking_Detect_Frame));
-				if (Mediapipe_Hand_Tracking_Detect_Frame != nullptr)
-				{
-					std::cout << "Mediapipe_Hand_Tracking_Detect_Frame获取成功" << std::endl;
-				}
-			}
-			else
-			{
-				std::cout << "无法在dll中找到Mediapipe_Hand_Tracking_Detect_Frame" << std::endl;
-			}
-
-			//获取Mediapipe_Hand_Tracking_Detect_Frame_Direct
-			void* p_Mediapipe_Hand_Tracking_Detect_Frame_Direct = dllLoader.GetFunction("Mediapipe_Hand_Tracking_Detect_Frame_Direct");
-			if (p_Mediapipe_Hand_Tracking_Detect_Frame_Direct != nullptr)
-			{
-				Mediapipe_Hand_Tracking_Detect_Frame_Direct = (Func_Mediapipe_Hand_Tracking_Detect_Frame_Direct)(p_Mediapipe_Hand_Tracking_Detect_Frame_Direct);
-				if (Mediapipe_Hand_Tracking_Detect_Frame_Direct != nullptr)
-				{
-					std::cout << "Mediapipe_Hand_Tracking_Detect_Frame_Direct获取成功" << std::endl;
-				}
-			}
-			else
-			{
-				std::cout << "无法在dll中找到Mediapipe_Hand_Tracking_Detect_Frame_Direct" << std::endl;
-			}
-
-			// 获取Mediapipe_Hand_Tracking_Detect_Video
-			void* p_Mediapipe_Hand_Tracking_Detect_Video = dllLoader.GetFunction("Mediapipe_Hand_Tracking_Detect_Video");
-			if (p_Mediapipe_Hand_Tracking_Detect_Video != nullptr)
-			{
-				Mediapipe_Hand_Tracking_Detect_Video = (Func_Mediapipe_Hand_Tracking_Detect_Video(p_Mediapipe_Hand_Tracking_Detect_Video));
-				if (Mediapipe_Hand_Tracking_Detect_Video != nullptr)
-				{
-					std::cout << "Mediapipe_Hand_Tracking_Detect_Video获取成功" << std::endl;
-				}
-			}
-			else
-			{
-				std::cout << "无法在dll中找到Mediapipe_Hand_Tracking_Detect_Video" << std::endl;
-			}
-
-
-			// 获取Mediapipe_Hand_Tracking_Release
-			void* p_Mediapipe_Hand_Tracking_Release = dllLoader.GetFunction("Mediapipe_Hand_Tracking_Release");
-			if (p_Mediapipe_Hand_Tracking_Release != nullptr)
-			{
-				Mediapipe_Hand_Tracking_Release = (Func_Mediapipe_Hand_Tracking_Release(p_Mediapipe_Hand_Tracking_Release));
-				if (Mediapipe_Hand_Tracking_Release != nullptr)
-				{
-					std::cout << "Mediapipe_Hand_Tracking_Release获取成功" << std::endl;
-				}
-			}
-			else
-			{
-				std::cout << "无法在dll中找到Mediapipe_Hand_Tracking_Release" << std::endl;
-			}
-
-		}
-		else
-		{
-			std::cout << "dll加载失败！" << std::endl;
-		}
-	}
-	else
-	{
-		std::cout << "dll不存在" << std::endl;
-	}
+	mediapipeHandTrackingDll.LoadMediapipeHandTrackingDll(dll_path);
+	mediapipeHandTrackingDll.GetAllFunctions();
 
 	/* 初始化Mediapipe Hand Tracking */
 #ifdef _DEBUG
@@ -269,8 +108,8 @@ int main()
 #else
 	std::string mediapipe_hand_tracking_model_path = "./hand_tracking_desktop_live.pbtxt";
 #endif // _DEBUG
-	
-	if (Mediapipe_Hand_Tracking_Init(mediapipe_hand_tracking_model_path.c_str()))
+
+	if (mediapipeHandTrackingDll.m_Mediapipe_Hand_Tracking_Init(mediapipe_hand_tracking_model_path.c_str()))
 	{
 		std::cout << "初始化模型成功" << std::endl;
 	}
@@ -280,7 +119,7 @@ int main()
 	}
 
 	// 注册回调函数
-	if (Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback(LandmarksCallBackImpl))
+	if (mediapipeHandTrackingDll.m_Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback(LandmarksCallBackImpl))
 	{
 		std::cout << "注册坐标回调函数成功" << std::endl;
 	}
@@ -289,7 +128,7 @@ int main()
 		std::cout << "注册坐标回调函数失败" << std::endl;
 	}
 
-	if (Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback(GestureResultCallBackImpl))
+	if (mediapipeHandTrackingDll.m_Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback(GestureResultCallBackImpl))
 	{
 		std::cout << "注册手势识别结果回调函数成功" << std::endl;
 	}
@@ -305,21 +144,21 @@ int main()
 
 
 	//打开第一个摄像头
-	VideoCapture cap(0);
+	cv::VideoCapture cap(0);
 	//判断摄像头是否打开
 	if (!cap.isOpened())
 	{
-		cout << "摄像头未成功打开" << endl;
+		std::cout << "摄像头未成功打开" << std::endl;
 	}
 
 	//创建窗口
-	namedWindow("打开摄像头", 1);
+	cv::namedWindow("打开摄像头", 1);
 
 	int image_index = 0;
 	while (1)
 	{
 		//创建Mat对象
-		Mat frame;
+		cv::Mat frame;
 		//从cap中读取一帧存到frame中
 		bool res = cap.read(frame);
 		if (!res)
@@ -334,7 +173,7 @@ int main()
 		}
 
 		//深拷贝
-		Mat copyMat;
+		cv::Mat copyMat;
 		frame.copyTo(copyMat);
 
 		// 浅拷贝
@@ -356,7 +195,7 @@ int main()
 
 		/* 3 第三种方式：传入视频帧直接返回手势识别结果，不通过回调函数返回结果 */
 		GestureRecognitionResult gestureRecognitionResult;
-		if (Mediapipe_Hand_Tracking_Detect_Frame_Direct(copyMat.cols, copyMat.rows, (void*)pImageData, gestureRecognitionResult))
+		if (mediapipeHandTrackingDll.m_Mediapipe_Hand_Tracking_Detect_Frame_Direct(copyMat.cols, copyMat.rows, (void*)pImageData, gestureRecognitionResult))
 		{
 			for (int i = 0; i < 2; ++i)
 			{
@@ -381,7 +220,7 @@ int main()
 		//显示摄像头读取到的图像
 		imshow("打开摄像头", frame);
 		//等待1毫秒，如果按键则退出循环
-		if (waitKey(1) >= 0)
+		if (cv::waitKey(1) >= 0)
 		{
 			break;
 		}
@@ -389,7 +228,7 @@ int main()
 		image_index += 1;
 	}
 
-	if (Mediapipe_Hand_Tracking_Release())
+	if (mediapipeHandTrackingDll.m_Mediapipe_Hand_Tracking_Release())
 	{
 		std::cout << "Mediapipe释放成功！" << std::endl;
 	}
@@ -402,7 +241,126 @@ int main()
 	cap.release();
 	cv::destroyAllWindows();
 
-	dllLoader.UnloadDynamicModule();
+	mediapipeHandTrackingDll.UnLoadMediapipeHandTrackingDll();
+}
+
+
+void HolisticTrackingDllTest()
+{
+	MediapipeHolisticTrackingDll mediapipeHolisticTrackingDll;
+
+#ifdef _DEBUG
+	std::string dll_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/MediapipeHolisticTracking.dll";
+#else
+	std::string dll_path = "./MediapipeHolisticTracking.dll";
+#endif // DEBUG
+
+	mediapipeHolisticTrackingDll.LoadMediapipeHolisticTrackingDll(dll_path);
+	mediapipeHolisticTrackingDll.GetAllFunctions();
+
+
+	/* 初始化Mediapipe Holistic Tracking */
+#ifdef _DEBUG
+	std::string mediapipe_holistic_tracking_model_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/holistic_tracking_cpu.pbtxt";
+#else
+	std::string mediapipe_holistic_tracking_model_path = "./holistic_tracking_cpu.pbtxt";
+#endif // _DEBUG
+
+	if (mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Init(mediapipe_holistic_tracking_model_path.c_str()))
+	{
+		std::cout << "初始化模型成功" << std::endl;
+	}
+	else
+	{
+		std::cout << "初始化模型失败" << std::endl;
+	}
+
+	/*----- 第一种方式：传图片帧进去识别 -----*/
+
+	//打开第一个摄像头
+	cv::VideoCapture cap(0);
+	//判断摄像头是否打开
+	if (!cap.isOpened())
+	{
+		std::cout << "摄像头未成功打开" << std::endl;
+	}
+
+	//创建窗口
+	cv::namedWindow("打开摄像头", 1);
+
+	while (true)
+	{
+		//创建Mat对象
+		cv::Mat frame;
+		//从cap中读取一帧存到frame中
+		bool res = cap.read(frame);
+		if (!res)
+		{
+			break;
+		}
+
+		//判断是否读取到
+		if (frame.empty())
+		{
+			break;
+		}
+
+		//深拷贝
+		cv::Mat copyMat;
+		frame.copyTo(copyMat);
+
+		uchar* pImageData = copyMat.data;
+		int* pdetect_result = new int[3];
+		if (mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Detect_Frame_Direct(copyMat.cols, copyMat.rows, (void*)pImageData, pdetect_result,true))
+		{
+			std::string armUpAndDownRecognitionResult = GetHandUpHandDownResult(pdetect_result[0]);
+			std::string leftHandGestureRecognitionResult = GetGestureResult(pdetect_result[1]);
+			std::string rightHandGestureRecognitionResult = GetGestureResult(pdetect_result[2]);
+
+			std::cout << armUpAndDownRecognitionResult << std::endl;
+			std::cout << "左手手势为：" << leftHandGestureRecognitionResult << std::endl;
+			std::cout << "右手手势为：" << rightHandGestureRecognitionResult << std::endl;
+		}
+		else
+		{
+			std::cout << "Mediapipe_Holistic_Tracking_Detect_Frame_Direct执行失败！" << std::endl;
+		}
+		delete[] pdetect_result;
+
+		//显示摄像头读取到的图像
+		imshow("打开摄像头", frame);
+		//等待1毫秒，如果按键则退出循环
+		if (cv::waitKey(1) >= 0)
+		{
+			break;
+		}
+	}
+
+	/*----- 第二种方式：在DLL内部打开摄像头进行识别，主要测试用 -----*/
+	//mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Detect_Camera(true);
+
+	if (mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Release())
+	{
+		std::cout << "Mediapipe释放成功！" << std::endl;
+	}
+	else
+	{
+		std::cout << "Mediapipe释放失败！" << std::endl;
+	}
+
+
+	cap.release();
+	cv::destroyAllWindows();
+
+
+	mediapipeHolisticTrackingDll.UnLoadMediapipeHolisticTrackingDll();
+}
+
+int main()
+{
+	//HandTrackingDllTest();
+
+	HolisticTrackingDllTest();
 
 	getchar();
 

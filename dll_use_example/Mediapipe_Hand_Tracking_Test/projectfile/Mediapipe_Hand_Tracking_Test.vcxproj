@@ -143,9 +143,13 @@
   <ItemGroup>
     <ClCompile Include="..\src\DynamicModuleLoader.cpp" />
     <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\MediapipeHandTrackingDll.cpp" />
+    <ClCompile Include="..\src\MediapipeHolisticTrackingDll.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\DynamicModuleLoader.h" />
+    <ClInclude Include="..\src\MediapipeHandTrackingDll.h" />
+    <ClInclude Include="..\src\MediapipeHolisticTrackingDll.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
