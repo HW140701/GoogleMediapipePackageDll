@@ -1,14 +1,11 @@
-# Google_Mediapipe_Hand_Tracking_dll
+# GoogleMediapipePackageDll
 
 ![HandTracking](resource/HandTracking.gif)
 
 
-
 # 1 项目简介
 
-将Google Mediapipe中的手部追踪与识别功能封装成动态链接库，通过调用该库可以在桌面应用程序中进行手势识别以及得到手部关节坐标点。
-
-
+将Google Mediapipe中的HandTracking与HolisticTracking功能封装成动态链接库，其中dll/hand_tracking_test对应HandTracking功能的封装，dll/holistic_tracking_dll对应HolisticTracking功能的封装。
 
 # 2 项目组织
 
@@ -19,7 +16,7 @@
 
 # 3 详细的配置教程
 
-## 3.1 Mediapipe在Windows上的编译教程
+## 3.1 Mediapipe C++在Windows上的编译教程
 
 - [ https://www.stubbornhuang.com/1555/]( https://www.stubbornhuang.com/1555/ " https://www.stubbornhuang.com/1555/")
 
@@ -29,6 +26,10 @@
 ## 3.2 封装Mediapipe HandTracking为dll的教程
 
 - [ https://www.stubbornhuang.com/1562/]( https://www.stubbornhuang.com/1562/ " https://www.stubbornhuang.com/1562/")
-
 - [ https://stubbornhuang.blog.csdn.net/article/details/119675282]( https://stubbornhuang.blog.csdn.net/article/details/119675282 " https://stubbornhuang.blog.csdn.net/article/details/119675282")
+
+##  3.3 封装Mediapipe HolisticTracking为dll的教程
+
+-  [https://www.stubbornhuang.com/1919/](https://www.stubbornhuang.com/1919/)
+- [https://blog.csdn.net/HW140701/article/details/122606320](https://blog.csdn.net/HW140701/article/details/122606320)
 
