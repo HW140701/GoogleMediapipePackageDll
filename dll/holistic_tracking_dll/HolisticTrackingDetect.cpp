@@ -114,7 +114,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_InitGraph(
 	m_pFaceLandmarksPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(faceLandmarks.value()));
 
 	MP_RETURN_IF_ERROR(m_Graph.StartRun({}));
-	std::cout << "======= graph_ StartRun success ============" << std::endl;
+	std::cout << "----------------Graph StartRun Success---------------------" << std::endl;
 	return absl::OkStatus();
 }
 
@@ -170,7 +170,8 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 	// 2 PoseLandmarks
 	mediapipe::Packet poseeLandmarksPacket;
-	int poseDetectResult = ArmUpDown::NoResult;
+	int left_arm_result = (int)ArmUpDown::NoResult;
+	int right_arm_result = (int)ArmUpDown::NoResult;
 	if (m_pPoseLandmarksPoller->QueueSize() != 0)
 	{
 		if (m_pPoseLandmarksPoller->Next(&poseeLandmarksPacket))
@@ -194,11 +195,12 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 			}
 
 			ArmUpAndDownRecognition armUpAndDownRecognition;
-			poseDetectResult = armUpAndDownRecognition.RecognizeProcess(posePoints);
+			armUpAndDownRecognition.RecognizeProcess(posePoints,left_arm_result,right_arm_result);
 			//std::cout << "手臂抬手放手识别结果：" << poseDetectResult << std::endl;
 		}
 	}
-	detect_result[0] = poseDetectResult;
+	detect_result[0] = left_arm_result;
+	detect_result[1] = right_arm_result;
 
 	// 3 LeftHandLandmarks
 	mediapipe::Packet leftHandLandmarksPacket;
@@ -230,7 +232,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 			//std::cout << "左手手势识别结果：" << leftHandDetectResult << std::endl;
 		}
 	}
-	detect_result[1] = leftHandDetectResult;
+	detect_result[2] = leftHandDetectResult;
 
 	// 4 RightHandLandmarks
 	mediapipe::Packet rightHandLandmarksPacket;
@@ -263,7 +265,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 		}
 	}
-	detect_result[2] = rightHandDetectResult;
+	detect_result[3] = rightHandDetectResult;
 
 	// 4 FaceLandmarks
 	//mediapipe::Packet faceLandmarksPacket;
@@ -291,6 +293,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 {
 	std::string cvWindowName = "MediapipeHolistic";
 
+	// 打开OpenCV摄像头
 	cv::VideoCapture capture(0);
 	if (!capture.isOpened())
 	{
@@ -299,7 +302,8 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 	bool grab_frames = true;
 	while (grab_frames) {
-		// Capture opencv camera or video frame.
+
+		// 从摄像头抓取视频帧
 		cv::Mat camera_frame_raw;
 		capture >> camera_frame_raw;
 		if (camera_frame_raw.empty())
@@ -307,16 +311,16 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 		cv::Mat camera_frame;
 		cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGB);
-		cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+		cv::flip(camera_frame, camera_frame, 1);
 
-		// Wrap Mat into an ImageFrame.
+		// 将OpenCV Mat转换为ImageFrame
 		auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 			mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 			mediapipe::ImageFrame::kDefaultAlignmentBoundary);
 		cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
 		camera_frame.copyTo(input_frame_mat);
 
-		// Send image packet into the graph.
+		// 发送图片到图中推理
 		size_t frame_timestamp_us =
 			(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
 
@@ -324,14 +328,19 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 			m_Video_InputStreamName, mediapipe::Adopt(input_frame.release())
 			.At(mediapipe::Timestamp(frame_timestamp_us))));
 
-		// Get the graph result packet, or stop if that fails.
+		// 获取推理结果
 		mediapipe::Packet packet;
 		if (!m_pVideoPoller->Next(&packet)) break;
 
-		if (show_image) {
+		if (show_image)
+		{
+			// 从视频输出获取mediapipe::ImageFrame结果
 			auto& output_frame = packet.Get<mediapipe::ImageFrame>();
-			// Convert back to opencv for display or saving.
+
+			// 转换mediapipe::ImageFrame为cv::Mat
 			cv::Mat output_frame_mat = mediapipe::formats::MatView(&output_frame);
+
+			// 显示cv::Mat结果
 			cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
 			cv::Mat dst;
 			cv::resize(output_frame_mat, dst, cv::Size(output_frame_mat.cols / 2, output_frame_mat.rows / 2));

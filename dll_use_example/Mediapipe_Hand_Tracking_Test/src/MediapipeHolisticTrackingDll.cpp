@@ -2,9 +2,9 @@
 
 MediapipeHolisticTrackingDll::MediapipeHolisticTrackingDll()
 {
-	m_Mediapipe_Holistic_Tracking_Init = nullptr;
-	m_Mediapipe_Holistic_Tracking_Detect_Frame_Direct = nullptr;
-	m_Mediapipe_Holistic_Tracking_Release = nullptr;
+	m_MediapipeHolisticTrackingInit = nullptr;
+	m_MediapipeHolisticTrackingDetectFrameDirect = nullptr;
+	m_MediapipeHolisticTrackingRelease = nullptr;
 }
 
 MediapipeHolisticTrackingDll::~MediapipeHolisticTrackingDll()
@@ -43,11 +43,11 @@ bool MediapipeHolisticTrackingDll::GetAllFunctions()
 {
 	if (m_DynamicModuleLoader.GetDynamicModuleState())
 	{
-		void* pMediapipe_Holistic_Tracking_Init = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingInit");
-		if (pMediapipe_Holistic_Tracking_Init != nullptr)
+		void* pMediapipeHolisticTrackingInit = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingInit");
+		if (pMediapipeHolisticTrackingInit != nullptr)
 		{
-			m_Mediapipe_Holistic_Tracking_Init = (FuncMediapipeHolisticTrackingInit)(pMediapipe_Holistic_Tracking_Init);
-			if (m_Mediapipe_Holistic_Tracking_Init != nullptr)
+			m_MediapipeHolisticTrackingInit = (FuncMediapipeHolisticTrackingInit)(pMediapipeHolisticTrackingInit);
+			if (m_MediapipeHolisticTrackingInit != nullptr)
 			{
 				
 			}
@@ -61,11 +61,11 @@ bool MediapipeHolisticTrackingDll::GetAllFunctions()
 			return false;
 		}
 
-		void* pMediapipe_Holistic_Tracking_Detect_Frame_Direct = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingDetectFrameDirect");
-		if (pMediapipe_Holistic_Tracking_Detect_Frame_Direct != nullptr)
+		void* pMediapipeHolisticTrackingDetectFrameDirect = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingDetectFrameDirect");
+		if (pMediapipeHolisticTrackingDetectFrameDirect != nullptr)
 		{
-			m_Mediapipe_Holistic_Tracking_Detect_Frame_Direct = (FuncMediapipeHolisticTrackingDetectFrameDirect)(pMediapipe_Holistic_Tracking_Detect_Frame_Direct);
-			if (m_Mediapipe_Holistic_Tracking_Detect_Frame_Direct != nullptr)
+			m_MediapipeHolisticTrackingDetectFrameDirect = (FuncMediapipeHolisticTrackingDetectFrameDirect)(pMediapipeHolisticTrackingDetectFrameDirect);
+			if (m_MediapipeHolisticTrackingDetectFrameDirect != nullptr)
 			{
 
 			}
@@ -79,11 +79,11 @@ bool MediapipeHolisticTrackingDll::GetAllFunctions()
 			return false;
 		}
 
-		void* pMediapipe_Holistic_Tracking_Detect_Camera = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingDetectCamera");
-		if (pMediapipe_Holistic_Tracking_Detect_Camera != nullptr)
+		void* pMediapipeHolisticTrackingDetectCamera = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingDetectCamera");
+		if (pMediapipeHolisticTrackingDetectCamera != nullptr)
 		{
-			m_Mediapipe_Holistic_Tracking_Detect_Camera = (FuncMediapipeHolisticTrackingDetectCamera)(pMediapipe_Holistic_Tracking_Detect_Camera);
-			if (m_Mediapipe_Holistic_Tracking_Detect_Camera != nullptr)
+			m_MediapipeHolisticTrackingDetectCamera = (FuncMediapipeHolisticTrackingDetectCamera)(pMediapipeHolisticTrackingDetectCamera);
+			if (m_MediapipeHolisticTrackingDetectCamera != nullptr)
 			{
 
 			}
@@ -97,11 +97,11 @@ bool MediapipeHolisticTrackingDll::GetAllFunctions()
 			return false;
 		}
 
-		void* pMediapipe_Holistic_Tracking_Release = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingRelease");
-		if (pMediapipe_Holistic_Tracking_Release != nullptr)
+		void* pMediapipeHolisticTrackingRelease = m_DynamicModuleLoader.GetFunction("MediapipeHolisticTrackingRelease");
+		if (pMediapipeHolisticTrackingRelease != nullptr)
 		{
-			m_Mediapipe_Holistic_Tracking_Release = (FuncMediapipeHolisticTrackingRelease)(pMediapipe_Holistic_Tracking_Release);
-			if (m_Mediapipe_Holistic_Tracking_Release != nullptr)
+			m_MediapipeHolisticTrackingRelease = (FuncMediapipeHolisticTrackingRelease)(pMediapipeHolisticTrackingRelease);
+			if (m_MediapipeHolisticTrackingRelease != nullptr)
 			{
 
 			}

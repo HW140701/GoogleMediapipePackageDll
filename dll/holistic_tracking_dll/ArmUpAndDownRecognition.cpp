@@ -10,10 +10,10 @@ GoogleMediapipeDetect::ArmUpAndDownRecognition::~ArmUpAndDownRecognition()
 
 }
 
-int GoogleMediapipeDetect::ArmUpAndDownRecognition::RecognizeProcess(const std::vector<Point2D>& pose_joint_points)
+bool GoogleMediapipeDetect::ArmUpAndDownRecognition::RecognizeProcess(const std::vector<Point2D>& pose_joint_points, int& left_arm_result, int& right_arm_result)
 {
 	if (pose_joint_points.size() != 33)
-		return ArmUpDown::NoResult;
+		return false;
 
 	Point2D left_elbow = pose_joint_points[13];
 	Point2D right_elbow = pose_joint_points[14];
@@ -21,16 +21,33 @@ int GoogleMediapipeDetect::ArmUpAndDownRecognition::RecognizeProcess(const std::
 	Point2D left_wrist = pose_joint_points[15];
 	Point2D right_wrist = pose_joint_points[16];
 
-	if (left_wrist.y > left_elbow.y && right_wrist.y > left_elbow.y)
+	// ¼ì²â×óÊÖ
+	if (left_wrist.y > left_elbow.y)
 	{
-		return ArmUpDown::ArmDown;
+		left_arm_result = (int)ArmUpDown::ArmDown;
 	}
-	else if (left_wrist.y < left_elbow.y && right_wrist.y < left_elbow.y)
+	else if (left_wrist.y < left_elbow.y)
 	{
-		return ArmUpDown::ArmUp;
+		left_arm_result = (int)ArmUpDown::ArmUp;
 	}
 	else
 	{
-		return ArmUpDown::NoResult;
+		left_arm_result = (int)ArmUpDown::NoResult;
 	}
+
+	// ¼ì²âÓÒÊÖ
+	if (right_wrist.y > left_elbow.y)
+	{
+		right_arm_result = ArmUpDown::ArmDown;
+	}
+	else if (right_wrist.y < left_elbow.y)
+	{
+		right_arm_result = ArmUpDown::ArmUp;
+	}
+	else
+	{
+		right_arm_result = ArmUpDown::NoResult;
+	}
+
+	return true;
 }

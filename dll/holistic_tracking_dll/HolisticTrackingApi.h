@@ -44,6 +44,7 @@ extern "C" {
 	@param[in] image_width 视频帧宽度
 	@param[in] image_height 视频帧高度
 	@param[in] image_data 视频帧数据
+	@param[in] show_result_image 是否显示结果图片
 	@param[out] gesture_result - 手势识别结果
 	@return 返回操作成功或者失败
 		0 失败

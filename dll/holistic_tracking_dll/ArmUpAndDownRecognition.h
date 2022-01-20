@@ -13,7 +13,7 @@ namespace GoogleMediapipeDetect {
 		virtual~ArmUpAndDownRecognition();
 
 	public:
-		int RecognizeProcess(const std::vector<Point2D>& pose_joint_points);
+		bool RecognizeProcess(const std::vector<Point2D>& pose_joint_points,int& left_arm_result,int& right_arm_result);
 	};
 }
 

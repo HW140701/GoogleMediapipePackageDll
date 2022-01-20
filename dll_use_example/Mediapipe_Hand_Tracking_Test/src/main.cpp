@@ -46,7 +46,7 @@ std::string GetGestureResult(int result)
 	return result_str;
 }
 
-std::string GetHandUpHandDownResult(int result)
+std::string GetArmUpAndDownResult(int result)
 {
 	std::string result_str = "未知";
 	switch (result)
@@ -94,7 +94,7 @@ void HandTrackingDllTest()
 {
 	MediapipeHandTrackingDll mediapipeHandTrackingDll;
 #ifdef _DEBUG
-	std::string dll_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/Mediapipe_Hand_Tracking.dll";
+	std::string dll_path = ".././bin/MediapipeTest/x64/Debug/Mediapipe_Hand_Tracking.dll";
 #else
 	std::string dll_path = "./Mediapipe_Hand_Tracking.dll";
 #endif // DEBUG
@@ -104,7 +104,7 @@ void HandTrackingDllTest()
 
 	/* 初始化Mediapipe Hand Tracking */
 #ifdef _DEBUG
-	std::string mediapipe_hand_tracking_model_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/hand_tracking_desktop_live.pbtxt";
+	std::string mediapipe_hand_tracking_model_path = ".././bin/MediapipeTest/x64/Debug/hand_tracking_desktop_live.pbtxt";
 #else
 	std::string mediapipe_hand_tracking_model_path = "./hand_tracking_desktop_live.pbtxt";
 #endif // _DEBUG
@@ -206,7 +206,7 @@ void HandTrackingDllTest()
 
 				if (gestureRecognitionResult.m_HandUp_HandDown_Detect_Result[i] != -1)
 				{
-					std::cout << "第" << i << "只手的抬手放手识别结果为：" << GetHandUpHandDownResult(gestureRecognitionResult.m_HandUp_HandDown_Detect_Result[i]) << std::endl;
+					std::cout << "第" << i << "只手的抬手放手识别结果为：" << GetArmUpAndDownResult(gestureRecognitionResult.m_HandUp_HandDown_Detect_Result[i]) << std::endl;
 				}
 			}
 
@@ -250,7 +250,7 @@ void HolisticTrackingDllTest()
 	MediapipeHolisticTrackingDll mediapipeHolisticTrackingDll;
 
 #ifdef _DEBUG
-	std::string dll_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/MediapipeHolisticTracking.dll";
+	std::string dll_path = ".././bin/MediapipeTest/x64/Debug/MediapipeHolisticTracking.dll";
 #else
 	std::string dll_path = "./MediapipeHolisticTracking.dll";
 #endif // DEBUG
@@ -261,12 +261,12 @@ void HolisticTrackingDllTest()
 
 	/* 初始化Mediapipe Holistic Tracking */
 #ifdef _DEBUG
-	std::string mediapipe_holistic_tracking_model_path = ".././bin/Mediapipe_Hand_Tracking_Test/x64/Debug/holistic_tracking_cpu.pbtxt";
+	std::string mediapipe_holistic_tracking_model_path = ".././bin/MediapipeTest/x64/Debug/holistic_tracking_cpu.pbtxt";
 #else
 	std::string mediapipe_holistic_tracking_model_path = "./holistic_tracking_cpu.pbtxt";
 #endif // _DEBUG
 
-	if (mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Init(mediapipe_holistic_tracking_model_path.c_str()))
+	if (mediapipeHolisticTrackingDll.m_MediapipeHolisticTrackingInit(mediapipe_holistic_tracking_model_path.c_str()))
 	{
 		std::cout << "初始化模型成功" << std::endl;
 	}
@@ -310,14 +310,16 @@ void HolisticTrackingDllTest()
 		frame.copyTo(copyMat);
 
 		uchar* pImageData = copyMat.data;
-		int* pdetect_result = new int[3];
-		if (mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Detect_Frame_Direct(copyMat.cols, copyMat.rows, (void*)pImageData, pdetect_result,true))
+		int* pdetect_result = new int[4];
+		if (mediapipeHolisticTrackingDll.m_MediapipeHolisticTrackingDetectFrameDirect(copyMat.cols, copyMat.rows, (void*)pImageData, pdetect_result,true))
 		{
-			std::string armUpAndDownRecognitionResult = GetHandUpHandDownResult(pdetect_result[0]);
-			std::string leftHandGestureRecognitionResult = GetGestureResult(pdetect_result[1]);
-			std::string rightHandGestureRecognitionResult = GetGestureResult(pdetect_result[2]);
+			std::string leftArmUpAndDownRecognitionResult = GetArmUpAndDownResult(pdetect_result[0]);
+			std::string rightArmUpAndDownRecognitionResult = GetArmUpAndDownResult(pdetect_result[1]);
+			std::string leftHandGestureRecognitionResult = GetGestureResult(pdetect_result[2]);
+			std::string rightHandGestureRecognitionResult = GetGestureResult(pdetect_result[3]);
 
-			std::cout << armUpAndDownRecognitionResult << std::endl;
+			std::cout << "左手抬手放手结果为：" << leftArmUpAndDownRecognitionResult << std::endl;
+			std::cout << "右手抬手放手结果为：" << rightArmUpAndDownRecognitionResult << std::endl;
 			std::cout << "左手手势为：" << leftHandGestureRecognitionResult << std::endl;
 			std::cout << "右手手势为：" << rightHandGestureRecognitionResult << std::endl;
 		}
@@ -339,7 +341,7 @@ void HolisticTrackingDllTest()
 	/*----- 第二种方式：在DLL内部打开摄像头进行识别，主要测试用 -----*/
 	//mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Detect_Camera(true);
 
-	if (mediapipeHolisticTrackingDll.m_Mediapipe_Holistic_Tracking_Release())
+	if (mediapipeHolisticTrackingDll.m_MediapipeHolisticTrackingRelease())
 	{
 		std::cout << "Mediapipe释放成功！" << std::endl;
 	}
