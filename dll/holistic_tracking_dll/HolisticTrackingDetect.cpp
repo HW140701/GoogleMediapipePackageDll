@@ -357,11 +357,11 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_ReleaseGraph()
 {
 	MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_Video_InputStreamName));
-	MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_Video_OutputStreamName));
-	MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_PoseLandmarks_OutputStreamName));
-	MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_LeftHandLandmarks_OutputStreamName));
-	MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_RightHandLandmarks_OutputStreamName));
-	MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_FaceLandmarks_OutputStreamName));
+	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_Video_OutputStreamName));
+	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_PoseLandmarks_OutputStreamName));
+	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_LeftHandLandmarks_OutputStreamName));
+	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_RightHandLandmarks_OutputStreamName));
+	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_FaceLandmarks_OutputStreamName));
 
 	return m_Graph.WaitUntilDone();
 }
