@@ -1,7 +1,11 @@
 # GoogleMediapipePackageDll
 
+## HandTracking Example
+
 ![HandTracking](resource/HandTracking.gif)
 
+## HolisticTracking Example
+![HolisticTracking](resource/HolisticTracking.gif)
 
 # 1 项目简介
 
