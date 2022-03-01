@@ -7,7 +7,7 @@
 ## HolisticTracking Example
 ![HolisticTracking](resource/HolisticTracking.gif)
 
-[中文文档](./README.md)
+[中文文档](./README-zh.md)
 
 # 1 Project Introduction
 
