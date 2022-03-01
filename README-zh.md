@@ -7,34 +7,32 @@
 ## HolisticTracking Example
 ![HolisticTracking](resource/HolisticTracking.gif)
 
-[中文文档](./README.md)
+# 1 项目简介
 
-# 1 Project Introduction
+将Google Mediapipe中的HandTracking与HolisticTracking功能封装成动态链接库，其中dll/hand_tracking_test对应HandTracking功能的封装，dll/holistic_tracking_dll对应HolisticTracking功能的封装。
 
-The HandTracking and HolisticTracking functions in Google Mediapipe are encapsulated into a dynamic link library, in which dll/hand_tracking_test corresponds to the encapsulation of the HandTracking function, and dll/holistic_tracking_dll corresponds to the encapsulation of the HolisticTracking function.
+# 2 项目组织
 
-# 2 Project Structure
-
-- The dll folder contains header files, source files, and Bazel compiled project files for generating dynamic link libraries;
-- dll_use_example contains a Visual Studio 2019 project, mainly to demonstrate how to use the above compiled dynamic link library;
+- dll文件夹包含了用于生成动态链接库的头文件、源文件、以及Bazel编译项目文件；
+- dll_use_example包含一个Visual Studio 2019项目工程，主要是演示如何使用上述编译的动态链接库；
 
 
 
-# 3 Configuration Tutorial
+# 3 详细的配置教程
 
-## 3.1 Compilation tutorial of Mediapipe C++ on Windows
+## 3.1 Mediapipe C++在Windows上的编译教程
 
 - [ https://www.stubbornhuang.com/1555/]( https://www.stubbornhuang.com/1555/ " https://www.stubbornhuang.com/1555/")
 
 - [https://stubbornhuang.blog.csdn.net/article/details/119546019](https://stubbornhuang.blog.csdn.net/article/details/119546019 "https://stubbornhuang.blog.csdn.net/article/details/119546019")
 
 
-## 3.2 A tutorial for encapsulating Mediapipe HandTracking as a dll
+## 3.2 封装Mediapipe HandTracking为dll的教程
 
 - [ https://www.stubbornhuang.com/1562/]( https://www.stubbornhuang.com/1562/ " https://www.stubbornhuang.com/1562/")
 - [ https://stubbornhuang.blog.csdn.net/article/details/119675282]( https://stubbornhuang.blog.csdn.net/article/details/119675282 " https://stubbornhuang.blog.csdn.net/article/details/119675282")
 
-##  3.3 A tutorial for encapsulating Mediapipe HolisticTracking as a dll
+##  3.3 封装Mediapipe HolisticTracking为dll的教程
 
 -  [https://www.stubbornhuang.com/1919/](https://www.stubbornhuang.com/1919/)
 - [https://blog.csdn.net/HW140701/article/details/122606320](https://blog.csdn.net/HW140701/article/details/122606320)
