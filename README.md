@@ -2,7 +2,7 @@
 
 This example is based on Mediapipe v0.8.6, the specific version is shown in the following figure:
 
-![mediapipe version](resource/mediapipe version.png)
+![mediapipe version](resource\mediapipe version.png)
 
 At present, some people report that using the latest version of Mediapipe, the code can be compiled successfully but not run successfully.
 
