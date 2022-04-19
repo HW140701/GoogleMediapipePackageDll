@@ -2,7 +2,7 @@
 
 本示例是基于Mediapipe v0.8.6，具体版本如下图所示：
 
-![mediapipe version](resource\mediapipe version.png)
+![mediapipe version](resource\mediapipeversion.png)
 
 目前有人反映使用Mediapipe的最新版本，可以编译成功代码但是运行不成功的。
 
