@@ -1,5 +1,13 @@
 # GoogleMediapipePackageDll
 
+本示例是基于Mediapipe v0.8.6，具体版本如下图所示：
+
+![mediapipe version](resource/mediapipe version.png)
+
+目前有人反映使用Mediapipe的最新版本，可以编译成功代码但是运行不成功的。
+
+目前还没有时间试Mediapipe最新版本是否可行，不过如果使用最新版本进行编译，应使用最新版本的模型而不是我仓库中的模型。
+
 ## HandTracking Example
 
 ![HandTracking](resource/HandTracking.gif)

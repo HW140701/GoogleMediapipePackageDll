@@ -1,5 +1,13 @@
 # GoogleMediapipePackageDll
 
+This example is based on Mediapipe v0.8.6, the specific version is shown in the following figure:
+
+![mediapipe version](resource/mediapipe version.png)
+
+At present, some people report that using the latest version of Mediapipe, the code can be compiled successfully but not run successfully.
+
+Haven't had time to try the latest version of Mediapipe yet, but if you compile with the latest version, you should use the latest version of the model instead of the model in my repository.
+
 ## HandTracking Example
 
 ![HandTracking](resource/HandTracking.gif)
