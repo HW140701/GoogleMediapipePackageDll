@@ -19,7 +19,7 @@ int GoogleMediapipeHandTrackingDetect::HandGestureRecognition::GestureRecognitio
 	if (single_hand_joint_vector.size() != 21)
 		return -1;
 
-	// ´óÄ´Ö¸½Ç¶È
+	// å¤§æ‹‡æŒ‡è§’åº¦
 	Vector2D thumb_vec1;
 	thumb_vec1.x = single_hand_joint_vector[0].x - single_hand_joint_vector[2].x;
 	thumb_vec1.y = single_hand_joint_vector[0].y - single_hand_joint_vector[2].y;
@@ -33,7 +33,7 @@ int GoogleMediapipeHandTrackingDetect::HandGestureRecognition::GestureRecognitio
 	//std::cout << "thumb.y = " << single_hand_joint_vector[0].y << std::endl;
 
 
-	// Ê³Ö¸½Ç¶È
+	// é£ŸæŒ‡è§’åº¦
 	Vector2D index_vec1;
 	index_vec1.x = single_hand_joint_vector[0].x - single_hand_joint_vector[6].x;
 	index_vec1.y = single_hand_joint_vector[0].y - single_hand_joint_vector[6].y;
@@ -46,7 +46,7 @@ int GoogleMediapipeHandTrackingDetect::HandGestureRecognition::GestureRecognitio
 	//std::cout << "index_angle = " << index_angle << std::endl;
 
 
-	// ÖÐÖ¸½Ç¶È
+	// ä¸­æŒ‡è§’åº¦
 	Vector2D middle_vec1;
 	middle_vec1.x = single_hand_joint_vector[0].x - single_hand_joint_vector[10].x;
 	middle_vec1.y = single_hand_joint_vector[0].y - single_hand_joint_vector[10].y;
@@ -59,7 +59,7 @@ int GoogleMediapipeHandTrackingDetect::HandGestureRecognition::GestureRecognitio
 	//std::cout << "middle_angle = " << middle_angle << std::endl;
 
 
-	// ÎÞÃûÖ¸½Ç¶È
+	// æ— åæŒ‡è§’åº¦
 	Vector2D ring_vec1;
 	ring_vec1.x = single_hand_joint_vector[0].x - single_hand_joint_vector[14].x;
 	ring_vec1.y = single_hand_joint_vector[0].y - single_hand_joint_vector[14].y;
@@ -71,7 +71,7 @@ int GoogleMediapipeHandTrackingDetect::HandGestureRecognition::GestureRecognitio
 	float ring_angle = Vector2DAngle(ring_vec1, ring_vec2);
 	//std::cout << "ring_angle = " << ring_angle << std::endl;
 
-	// Ð¡Ä´Ö¸½Ç¶È
+	// å°æ‹‡æŒ‡è§’åº¦
 	Vector2D pink_vec1;
 	pink_vec1.x = single_hand_joint_vector[0].x - single_hand_joint_vector[18].x;
 	pink_vec1.y = single_hand_joint_vector[0].y - single_hand_joint_vector[18].y;
@@ -84,7 +84,7 @@ int GoogleMediapipeHandTrackingDetect::HandGestureRecognition::GestureRecognitio
 	//std::cout << "pink_angle = " << pink_angle << std::endl;
 
 
-	// ¸ù¾Ý½Ç¶ÈÅÐ¶ÏÊÖÊÆ
+	// æ ¹æ®è§’åº¦åˆ¤æ–­æ‰‹åŠ¿
 	float angle_threshold = 65;
 	float thumb_angle_threshold = 40;
 

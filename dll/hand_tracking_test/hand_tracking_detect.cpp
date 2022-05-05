@@ -119,12 +119,12 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_In
 
 	MP_RETURN_IF_ERROR(m_Graph.Initialize(config));
 
-	// Ìí¼ÓvideoÊä³öÁ÷
+	// æ·»åŠ videoè¾“å‡ºæµ
 	auto sop = m_Graph.AddOutputStreamPoller(m_kOutputStream);
 	assert(sop.ok());
 	m_pPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(sop.value()));
 
-	// Ìí¼ÓlandmarksÊä³öÁ÷
+	// æ·»åŠ landmarksè¾“å‡ºæµ
 	mediapipe::StatusOrPoller sop_landmark = m_Graph.AddOutputStreamPoller(m_kOutputLandmarks);
 	assert(sop_landmark.ok());
 	m_pPoller_landmarks = std::make_unique<mediapipe::OutputStreamPoller>(std::move(sop_landmark.value()));
@@ -136,18 +136,18 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_In
 
 absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_RunMPPGraph(int image_index, int image_width, int image_height, void* image_data)
 {
-	// ¹¹Ôìcv::Mat¶ÔÏó
+	// æ„é€ cv::Matå¯¹è±¡
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3,(uchar*)image_data);
 	cv::cvtColor(camera_frame, camera_frame, cv::COLOR_BGR2RGB);
 	cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
-	//std::cout << "Í¼Æ¬¹¹½¨Íê³É" << std::endl;
+	//std::cout << "å›¾ç‰‡æ„å»ºå®Œæˆ" << std::endl;
 
 	// Wrap Mat into an ImageFrame.
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-	cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-	camera_frame.copyTo(input_frame_mat);
+	//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+	//camera_frame.copyTo(input_frame_mat);
 	//std::cout << "Wrap Mat into an ImageFrame." << std::endl;
 
 	// Send image packet into the graph.
@@ -202,7 +202,7 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 
 			}
 
-			// »Øµ÷×ø±êµã
+			// å›è°ƒåæ ‡ç‚¹
 			if (m_GestureResultCallBackFunc)
 			{
 				PoseInfo* hand_landmarks_pose_infos = new PoseInfo[hand_landmarks.size()];
@@ -221,7 +221,7 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 			}
 
 
-			// »Øµ÷Ê¶±ğ½á¹û
+			// å›è°ƒè¯†åˆ«ç»“æœ
 			if (m_GestureResultCallBackFunc)
 			{
 				m_GestureResultCallBackFunc(image_index, hand_gesture_recognition_result, output_landmarks.size());
@@ -238,18 +238,18 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 
 absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_RunMPPGraph_Direct(int image_width, int image_height, void* image_data, GestureRecognitionResult& gesture_result)
 {
-	// ¹¹Ôìcv::Mat¶ÔÏó
+	// æ„é€ cv::Matå¯¹è±¡
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3, (uchar*)image_data);
 	cv::cvtColor(camera_frame, camera_frame, cv::COLOR_BGR2RGB);
 	cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
-	//std::cout << "Í¼Æ¬¹¹½¨Íê³É" << std::endl;
+	//std::cout << "å›¾ç‰‡æ„å»ºå®Œæˆ" << std::endl;
 
 	// Wrap Mat into an ImageFrame.
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-	cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-	camera_frame.copyTo(input_frame_mat);
+	//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+	//camera_frame.copyTo(input_frame_mat);
 	//std::cout << "Wrap Mat into an ImageFrame." << std::endl;
 
 	// Send image packet into the graph.
@@ -293,12 +293,12 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 					singleHandGestureInfo.push_back(info);
 				}
 
-				// ¼ì²âÊÖÊÆ
+				// æ£€æµ‹æ‰‹åŠ¿
 				HandGestureRecognition handGestureRecognition;
 				int gesture_recognition_result = handGestureRecognition.GestureRecognition(singleHandGestureInfo);
 				tempGestureResult.m_Gesture_Recognition_Result[m] = gesture_recognition_result;
 
-				// ¼ì²â¾ÙÊÖ»òÕß·ÅÊÖ
+				// æ£€æµ‹ä¸¾æ‰‹æˆ–è€…æ”¾æ‰‹
 				HandUpHandDownDetect handupHandDownDetect;
 				int handuphanddown_result = handupHandDownDetect.DetectHandUpOrHandDown(singleHandGestureInfo, image_height);
 				tempGestureResult.m_HandUp_HandDown_Detect_Result[m] = handuphanddown_result;
@@ -350,8 +350,8 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 		auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 			mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 			mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-		cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-		camera_frame.copyTo(input_frame_mat);
+		//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+		//camera_frame.copyTo(input_frame_mat);
 
 		// Send image packet into the graph.
 		size_t frame_timestamp_us =
@@ -400,7 +400,7 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 
 				}
 
-				// »Øµ÷×ø±êµã
+				// å›è°ƒåæ ‡ç‚¹
 				if (m_GestureResultCallBackFunc)
 				{
 					PoseInfo* hand_landmarks_pose_infos = new PoseInfo[hand_landmarks.size()];
@@ -419,7 +419,7 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 				}
 
 
-				// »Øµ÷Ê¶±ğ½á¹û
+				// å›è°ƒè¯†åˆ«ç»“æœ
 				if (m_GestureResultCallBackFunc)
 				{
 					m_GestureResultCallBackFunc(image_index, hand_gesture_recognition_result, output_landmarks.size());

@@ -3,7 +3,7 @@
 
 #define EXPORT
 
-/* ¶¨Òå¶¯Ì¬Á´½Ó¿âdllµÄµ¼³ö */
+/* å®šä¹‰åŠ¨æ€é“¾æ¥åº“dllçš„å¯¼å‡º */
 #include <malloc.h>
 #ifdef _WIN32
 	#ifdef EXPORT
@@ -27,18 +27,18 @@ struct GestureRecognitionResult;
 
 
 /*
-@brief »Øµ÷ÊÖÊÆ×ø±êµã»Øµ÷º¯Êı
-@param[out] image_index ÊÓÆµÖ¡Ë÷Òı
-@param[out] infos ´æ´¢×ø±êµãÊı¾İµÄÒ»Î¬Êı×é
-@param[out] count Êı×é³¤¶È£¬×ø±êµãÊıÁ¿
+@brief å›è°ƒæ‰‹åŠ¿åæ ‡ç‚¹å›è°ƒå‡½æ•°
+@param[out] image_index è§†é¢‘å¸§ç´¢å¼•
+@param[out] infos å­˜å‚¨åæ ‡ç‚¹æ•°æ®çš„ä¸€ç»´æ•°ç»„
+@param[out] count æ•°ç»„é•¿åº¦ï¼Œåæ ‡ç‚¹æ•°é‡
 */
 typedef void(*LandmarksCallBack)(int image_index, PoseInfo* infos, int count);
 
 /*
-@brief »Øµ÷ÊÖÊÆÊ¶±ğ½á¹û»Øµ÷º¯Êı
-@param[out] image_index ÊÓÆµÖ¡Ë÷Òı
-@param[out] recogn_result ´æ´¢ÊÖÊÆÊ¶±ğ½á¹ûµÄÒ»Î¬Êı×é
-@param[out] count Êı×é³¤¶È£¬Ê¶±ğ½á¹ûÊıÁ¿
+@brief å›è°ƒæ‰‹åŠ¿è¯†åˆ«ç»“æœå›è°ƒå‡½æ•°
+@param[out] image_index è§†é¢‘å¸§ç´¢å¼•
+@param[out] recogn_result å­˜å‚¨æ‰‹åŠ¿è¯†åˆ«ç»“æœçš„ä¸€ç»´æ•°ç»„
+@param[out] count æ•°ç»„é•¿åº¦ï¼Œè¯†åˆ«ç»“æœæ•°é‡
 */
 typedef void(*GestureResultCallBack)(int image_index, int* recogn_result, int count);
 
@@ -53,76 +53,76 @@ extern "C" {
 #endif
 
 	/*
-	@brief ³õÊ¼»¯Google Mediapipe
-	@param[in] model_path ĞèÒª¼ÓÔØµÄÄ£ĞÍÂ·¾¶
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief åˆå§‹åŒ–Google Mediapipe
+	@param[in] model_path éœ€è¦åŠ è½½çš„æ¨¡å‹è·¯å¾„
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Init(const char* model_path);
 
 
 	/*
-	@brief ×¢²á»Øµ÷ÊÖÊÆ×ø±êµãµÄ»Øµ÷º¯Êı
-	@param func »Øµ÷º¯ÊıÖ¸Õë
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief æ³¨å†Œå›è°ƒæ‰‹åŠ¿åæ ‡ç‚¹çš„å›è°ƒå‡½æ•°
+	@param func å›è°ƒå‡½æ•°æŒ‡é’ˆ
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Reigeter_Landmarks_Callback(LandmarksCallBack func);
 
 
 	/*
-	@brief ×¢²áÊÖÊÆÊ¶±ğ½á¹ûµÄ»Øµ÷º¯Êı
-	@param func »Øµ÷º¯ÊıÖ¸Õë
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief æ³¨å†Œæ‰‹åŠ¿è¯†åˆ«ç»“æœçš„å›è°ƒå‡½æ•°
+	@param func å›è°ƒå‡½æ•°æŒ‡é’ˆ
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Register_Gesture_Result_Callback(GestureResultCallBack func);
 
 
 	/*
-	@brief ¼ì²âÊÓÆµÖ¡
-	@param[in] image_index ÊÓÆµÖ¡Ë÷ÒıºÅ
-	@param[in] image_width ÊÓÆµÖ¡¿í¶È
-	@param[in] image_height ÊÓÆµÖ¡¸ß¶È
-	@param[in] image_data ÊÓÆµÖ¡Êı¾İ
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief æ£€æµ‹è§†é¢‘å¸§
+	@param[in] image_index è§†é¢‘å¸§ç´¢å¼•å·
+	@param[in] image_width è§†é¢‘å¸§å®½åº¦
+	@param[in] image_height è§†é¢‘å¸§é«˜åº¦
+	@param[in] image_data è§†é¢‘å¸§æ•°æ®
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Detect_Frame(int image_index, int image_width, int image_height, void* image_data);
 
 	/*
-	@brief ¼ì²âÊÓÆµÖ¡
-	@param[in] image_width ÊÓÆµÖ¡¿í¶È
-	@param[in] image_height ÊÓÆµÖ¡¸ß¶È
-	@param[in] image_data ÊÓÆµÖ¡Êı¾İ
-	@param[out] gesture_result - ÊÖÊÆÊ¶±ğ½á¹û
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief æ£€æµ‹è§†é¢‘å¸§
+	@param[in] image_width è§†é¢‘å¸§å®½åº¦
+	@param[in] image_height è§†é¢‘å¸§é«˜åº¦
+	@param[in] image_data è§†é¢‘å¸§æ•°æ®
+	@param[out] gesture_result - æ‰‹åŠ¿è¯†åˆ«ç»“æœ
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Detect_Frame_Direct(int image_width, int image_height, void* image_data ,GestureRecognitionResult& gesture_result);
 
 
 	/*
-	@brief ¼ì²âÊÓÆµ
-	@param[in] video_path ÊÓÆµÂ·¾¶
-	@param[in] show_image ÊÇ·ñÏÔÊ¾½á¹ûÊÓÆµ
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief æ£€æµ‹è§†é¢‘
+	@param[in] video_path è§†é¢‘è·¯å¾„
+	@param[in] show_image æ˜¯å¦æ˜¾ç¤ºç»“æœè§†é¢‘
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Detect_Video(const char* video_path, int show_image);
 
 
 	/*
-	@brief Google MediapipeÊÍ·Å
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief Google Mediapipeé‡Šæ”¾
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int Mediapipe_Hand_Tracking_Release();
 
