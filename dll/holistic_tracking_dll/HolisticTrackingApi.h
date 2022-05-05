@@ -3,7 +3,7 @@
 
 #define EXPORT
 
-/* ¶¨Òå¶¯Ì¬Á´½Ó¿âdllµÄµ¼³ö */
+/* å®šä¹‰åŠ¨æ€é“¾æ¥åº“dllçš„å¯¼å‡º */
 #include <malloc.h>
 #ifdef _WIN32
 #ifdef EXPORT
@@ -31,40 +31,40 @@ extern "C" {
 #endif
 
 	/*
-	@brief ³õÊ¼»¯Google Mediapipe
-	@param[in] model_path ĞèÒª¼ÓÔØµÄÄ£ĞÍÂ·¾¶
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief åˆå§‹åŒ–Google Mediapipe
+	@param[in] model_path éœ€è¦åŠ è½½çš„æ¨¡å‹è·¯å¾„
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int MediapipeHolisticTrackingInit(const char* model_path);
 
 	/*
-	@brief ¼ì²âÊÓÆµÖ¡
-	@param[in] image_width ÊÓÆµÖ¡¿í¶È
-	@param[in] image_height ÊÓÆµÖ¡¸ß¶È
-	@param[in] image_data ÊÓÆµÖ¡Êı¾İ
-	@param[in] show_result_image ÊÇ·ñÏÔÊ¾½á¹ûÍ¼Æ¬
-	@param[out] gesture_result - ÊÖÊÆÊ¶±ğ½á¹û
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief æ£€æµ‹è§†é¢‘å¸§
+	@param[in] image_width è§†é¢‘å¸§å®½åº¦
+	@param[in] image_height è§†é¢‘å¸§é«˜åº¦
+	@param[in] image_data è§†é¢‘å¸§æ•°æ®
+	@param[in] show_result_image æ˜¯å¦æ˜¾ç¤ºç»“æœå›¾ç‰‡
+	@param[out] gesture_result - æ‰‹åŠ¿è¯†åˆ«ç»“æœ
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int MediapipeHolisticTrackingDetectFrameDirect(int image_width, int image_height, void* image_data, int* detect_result, bool show_result_image = false);
 
 	/*
-	@brief ¼ì²âÉãÏñÍ·
-	@param[in] show_image ÊÇ·ñÏÔÊ¾½á¹ûÍ¼Æ¬
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-	0 Ê§°Ü
-	1 ³É¹¦
+	@brief æ£€æµ‹æ‘„åƒå¤´
+	@param[in] show_image æ˜¯å¦æ˜¾ç¤ºç»“æœå›¾ç‰‡
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+	0 å¤±è´¥
+	1 æˆåŠŸ
 	*/
 	EXPORT_API int MediapipeHolisticTrackingDetectCamera(bool show_image = false);
 	/*
-	@brief Google MediapipeÊÍ·Å
-	@return ·µ»Ø²Ù×÷³É¹¦»òÕßÊ§°Ü
-		0 Ê§°Ü
-		1 ³É¹¦
+	@brief Google Mediapipeé‡Šæ”¾
+	@return è¿”å›æ“ä½œæˆåŠŸæˆ–è€…å¤±è´¥
+		0 å¤±è´¥
+		1 æˆåŠŸ
 	*/
 	EXPORT_API int MediapipeHolisticTrackingRelease();
 

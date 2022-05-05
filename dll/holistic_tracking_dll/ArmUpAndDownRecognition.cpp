@@ -21,7 +21,7 @@ bool GoogleMediapipeDetect::ArmUpAndDownRecognition::RecognizeProcess(const std:
 	Point2D left_wrist = pose_joint_points[15];
 	Point2D right_wrist = pose_joint_points[16];
 
-	// ¼ì²â×óÊÖ
+	// æ£€æµ‹å·¦æ‰‹
 	if (left_wrist.y > left_elbow.y)
 	{
 		left_arm_result = (int)ArmUpDown::ArmDown;
@@ -35,7 +35,7 @@ bool GoogleMediapipeDetect::ArmUpAndDownRecognition::RecognizeProcess(const std:
 		left_arm_result = (int)ArmUpDown::NoResult;
 	}
 
-	// ¼ì²âÓÒÊÖ
+	// æ£€æµ‹å³æ‰‹
 	if (right_wrist.y > left_elbow.y)
 	{
 		right_arm_result = ArmUpDown::ArmDown;

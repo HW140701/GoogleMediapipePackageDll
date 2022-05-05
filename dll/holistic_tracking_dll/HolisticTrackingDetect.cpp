@@ -88,27 +88,27 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_InitGraph(
 	MP_RETURN_IF_ERROR(m_Graph.Initialize(config));
 	std::cout << "m_Graph.Initialize(config) success" << std::endl;
 
-	// 1 ÊÓÆµÊä³ö
+	// 1 è§†é¢‘è¾“å‡º
 	auto videoOutputStream = m_Graph.AddOutputStreamPoller(m_Video_OutputStreamName);
 	assert(videoOutputStream.ok());
 	m_pVideoPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(videoOutputStream.value()));
 
-	// 2 PoseLandmarksÊä³ö
+	// 2 PoseLandmarksè¾“å‡º
 	mediapipe::StatusOrPoller poseLandmarks = m_Graph.AddOutputStreamPoller(m_PoseLandmarks_OutputStreamName);
 	assert(poseLandmarks.ok());
 	m_pPoseLandmarksPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(poseLandmarks.value()));
 
-	// 3 LeftHandLandmarksÊä³ö
+	// 3 LeftHandLandmarksè¾“å‡º
 	mediapipe::StatusOrPoller leftHandLandmarks = m_Graph.AddOutputStreamPoller(m_LeftHandLandmarks_OutputStreamName);
 	assert(leftHandLandmarks.ok());
 	m_pLeftHandLandmarksPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(leftHandLandmarks.value()));
 
-	// 4 RightHandLandmarksÊä³ö
+	// 4 RightHandLandmarksè¾“å‡º
 	mediapipe::StatusOrPoller rightHandLandmarks = m_Graph.AddOutputStreamPoller(m_RightHandLandmarks_OutputStreamName);
 	assert(rightHandLandmarks.ok());
 	m_pRightHandLandmarksPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(rightHandLandmarks.value()));
 
-	// 5 FaceLandmarksÊä³ö
+	// 5 FaceLandmarksè¾“å‡º
 	mediapipe::StatusOrPoller faceLandmarks = m_Graph.AddOutputStreamPoller(m_FaceLandmarks_OutputStreamName);
 	assert(faceLandmarks.ok());
 	m_pFaceLandmarksPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(faceLandmarks.value()));
@@ -120,33 +120,33 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_InitGraph(
 
 absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGraph_Direct(int image_width, int image_height, void* image_data, int* detect_result, bool show_result_image)
 {
-	/*----- 1 ¹¹Ôìcv::Mat¶ÔÏó -----*/
+	/*----- 1 æ„é€ cv::Matå¯¹è±¡ -----*/
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3, (uchar*)image_data);
 	cv::cvtColor(camera_frame, camera_frame, cv::COLOR_BGR2RGB);
-	// Ë®Æ½·­×ªÊäÈëÍ¼Ïñ
+	// æ°´å¹³ç¿»è½¬è¾“å…¥å›¾åƒ
 	cv::flip(camera_frame, camera_frame, 1);
-	//std::cout << "cv::Mat¶ÔÏó¹¹½¨Íê³É" << std::endl;
+	//std::cout << "cv::Matå¯¹è±¡æ„å»ºå®Œæˆ" << std::endl;
 
-	/*----- 2 ½«OpenCV Mat×ª»»ÎªImageFrame -----*/
+	/*----- 2 å°†OpenCV Matè½¬æ¢ä¸ºImageFrame -----*/
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
 	cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
 	camera_frame.copyTo(input_frame_mat);
-	//std::cout << "½«OpenCV Mat×ª»»ÎªImageFrameÍê³É" << std::endl;
+	//std::cout << "å°†OpenCV Matè½¬æ¢ä¸ºImageFrameå®Œæˆ" << std::endl;
 
-	/*----- 3 ·¢ËÍÍ¼Æ¬µ½Í¼ÖĞÍÆÀí -----*/
+	/*----- 3 å‘é€å›¾ç‰‡åˆ°å›¾ä¸­æ¨ç† -----*/
 	size_t frame_timestamp_us =
 		(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
 
 	MP_RETURN_IF_ERROR(m_Graph.AddPacketToInputStream(
 		m_Video_InputStreamName, mediapipe::Adopt(input_frame.release())
 		.At(mediapipe::Timestamp(frame_timestamp_us))));
-	//std::cout << "·¢ËÍÍ¼Æ¬µ½Í¼ÖĞÍÆÀíÍê³É" << std::endl;
+	//std::cout << "å‘é€å›¾ç‰‡åˆ°å›¾ä¸­æ¨ç†å®Œæˆ" << std::endl;
 
-	/*----- 4 µÃµ½½á¹û -----*/
+	/*----- 4 å¾—åˆ°ç»“æœ -----*/
 
-	// 1 ÊÓÆµÊä³ö½á¹ûÖ¡
+	// 1 è§†é¢‘è¾“å‡ºç»“æœå¸§
 	mediapipe::Packet packet;
 	if (!m_pVideoPoller->Next(&packet))
 	{
@@ -154,13 +154,13 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	}
 	if (show_result_image)
 	{
-		// ´ÓÊÓÆµÊä³ö»ñÈ¡mediapipe::ImageFrame½á¹û
+		// ä»è§†é¢‘è¾“å‡ºè·å–mediapipe::ImageFrameç»“æœ
 		auto& output_frame = packet.Get<mediapipe::ImageFrame>();
 
-		// ×ª»»mediapipe::ImageFrameÎªcv::Mat
+		// è½¬æ¢mediapipe::ImageFrameä¸ºcv::Mat
 		cv::Mat output_frame_mat = mediapipe::formats::MatView(&output_frame);
 
-		// ÏÔÊ¾cv::Mat½á¹û
+		// æ˜¾ç¤ºcv::Matç»“æœ
 		cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
 		cv::Mat dst;
 		cv::resize(output_frame_mat, dst, cv::Size(output_frame_mat.cols, output_frame_mat.rows));
@@ -196,7 +196,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 			ArmUpAndDownRecognition armUpAndDownRecognition;
 			armUpAndDownRecognition.RecognizeProcess(posePoints,left_arm_result,right_arm_result);
-			//std::cout << "ÊÖ±ÛÌ§ÊÖ·ÅÊÖÊ¶±ğ½á¹û£º" << poseDetectResult << std::endl;
+			//std::cout << "æ‰‹è‡‚æŠ¬æ‰‹æ”¾æ‰‹è¯†åˆ«ç»“æœï¼š" << poseDetectResult << std::endl;
 		}
 	}
 	detect_result[0] = left_arm_result;
@@ -229,7 +229,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 			GestureRecognition gestureRecognition;
 			leftHandDetectResult = gestureRecognition.RecognizeProcess(singleGesturePoints);
-			//std::cout << "×óÊÖÊÖÊÆÊ¶±ğ½á¹û£º" << leftHandDetectResult << std::endl;
+			//std::cout << "å·¦æ‰‹æ‰‹åŠ¿è¯†åˆ«ç»“æœï¼š" << leftHandDetectResult << std::endl;
 		}
 	}
 	detect_result[2] = leftHandDetectResult;
@@ -261,7 +261,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 			GestureRecognition gestureRecognition;
 			rightHandDetectResult = gestureRecognition.RecognizeProcess(singleGesturePoints);
-			//std::cout << "ÓÒÊÖÊÖÊÆÊ¶±ğ½á¹û£º" << rightHandDetectResult << std::endl;
+			//std::cout << "å³æ‰‹æ‰‹åŠ¿è¯†åˆ«ç»“æœï¼š" << rightHandDetectResult << std::endl;
 
 		}
 	}
@@ -293,7 +293,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 {
 	std::string cvWindowName = "MediapipeHolistic";
 
-	// ´ò¿ªOpenCVÉãÏñÍ·
+	// æ‰“å¼€OpenCVæ‘„åƒå¤´
 	cv::VideoCapture capture(0);
 	if (!capture.isOpened())
 	{
@@ -303,7 +303,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	bool grab_frames = true;
 	while (grab_frames) {
 
-		// ´ÓÉãÏñÍ·×¥È¡ÊÓÆµÖ¡
+		// ä»æ‘„åƒå¤´æŠ“å–è§†é¢‘å¸§
 		cv::Mat camera_frame_raw;
 		capture >> camera_frame_raw;
 		if (camera_frame_raw.empty())
@@ -313,14 +313,14 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 		cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGB);
 		cv::flip(camera_frame, camera_frame, 1);
 
-		// ½«OpenCV Mat×ª»»ÎªImageFrame
+		// å°†OpenCV Matè½¬æ¢ä¸ºImageFrame
 		auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 			mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 			mediapipe::ImageFrame::kDefaultAlignmentBoundary);
 		cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
 		camera_frame.copyTo(input_frame_mat);
 
-		// ·¢ËÍÍ¼Æ¬µ½Í¼ÖĞÍÆÀí
+		// å‘é€å›¾ç‰‡åˆ°å›¾ä¸­æ¨ç†
 		size_t frame_timestamp_us =
 			(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
 
@@ -328,19 +328,19 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 			m_Video_InputStreamName, mediapipe::Adopt(input_frame.release())
 			.At(mediapipe::Timestamp(frame_timestamp_us))));
 
-		// »ñÈ¡ÍÆÀí½á¹û
+		// è·å–æ¨ç†ç»“æœ
 		mediapipe::Packet packet;
 		if (!m_pVideoPoller->Next(&packet)) break;
 
 		if (show_image)
 		{
-			// ´ÓÊÓÆµÊä³ö»ñÈ¡mediapipe::ImageFrame½á¹û
+			// ä»è§†é¢‘è¾“å‡ºè·å–mediapipe::ImageFrameç»“æœ
 			auto& output_frame = packet.Get<mediapipe::ImageFrame>();
 
-			// ×ª»»mediapipe::ImageFrameÎªcv::Mat
+			// è½¬æ¢mediapipe::ImageFrameä¸ºcv::Mat
 			cv::Mat output_frame_mat = mediapipe::formats::MatView(&output_frame);
 
-			// ÏÔÊ¾cv::Mat½á¹û
+			// æ˜¾ç¤ºcv::Matç»“æœ
 			cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
 			cv::Mat dst;
 			cv::resize(output_frame_mat, dst, cv::Size(output_frame_mat.cols / 2, output_frame_mat.rows / 2));
