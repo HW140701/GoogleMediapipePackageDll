@@ -131,8 +131,8 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-	cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-	camera_frame.copyTo(input_frame_mat);
+	//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+	//camera_frame.copyTo(input_frame_mat);
 	//std::cout << "将OpenCV Mat转换为ImageFrame完成" << std::endl;
 
 	/*----- 3 发送图片到图中推理 -----*/
@@ -317,8 +317,8 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 		auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 			mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
 			mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-		cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-		camera_frame.copyTo(input_frame_mat);
+		//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+		//camera_frame.copyTo(input_frame_mat);
 
 		// 发送图片到图中推理
 		size_t frame_timestamp_us =
