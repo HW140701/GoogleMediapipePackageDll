@@ -22,6 +22,8 @@ GoogleMediapipeDetect::HolisticTrackingDetect::HolisticTrackingDetect()
 	m_pLeftHandLandmarksPoller = nullptr;
 	m_pRightHandLandmarksPoller = nullptr;
 	m_pFaceLandmarksPoller = nullptr;
+
+	m_bIsFirstTimeExecute = true;
 }
 
 GoogleMediapipeDetect::HolisticTrackingDetect::~HolisticTrackingDetect()
@@ -126,6 +128,13 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	bool show_result_image
 )
 {
+	// 如果该函数第一次执行则存储该函数第一次执行时的时间
+	if(m_bIsFirstTimeExecute)
+	{
+		m_Mediapipe_RunMPPGraph_Direct_Start_Time = std::chrono::system_clock::now();
+		m_bIsFirstTimeExecute = false;
+	}
+
 	/*----- 1 构造cv::Mat对象 -----*/
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3, (uchar*)image_data);
 	
@@ -148,8 +157,10 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	//std::cout << "将OpenCV Mat转换为ImageFrame完成" << std::endl;
 
 	/*----- 3 发送图片到图中推理 -----*/
-	size_t frame_timestamp_us =
-		(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
+	// size_t frame_timestamp_us =
+	// 	(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
+	auto frame_timestamp_end = std::chrono::system_clock::now();
+	size_t frame_timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(frame_timestamp_end - m_Mediapipe_RunMPPGraph_Direct_Start_Time).count();
 
 	MP_RETURN_IF_ERROR(m_Graph.AddPacketToInputStream(
 		m_Video_InputStreamName, mediapipe::Adopt(input_frame.release())
@@ -207,6 +218,10 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 			ArmUpAndDownRecognition armUpAndDownRecognition;
 			armUpAndDownRecognition.RecognizeProcess(posePoints,left_arm_result,right_arm_result);
+
+			posePoints.clear();
+			posePoints.shrink_to_fit();
+
 			//std::cout << "手臂抬手放手识别结果：" << poseDetectResult << std::endl;
 		}
 	}
@@ -240,6 +255,9 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 			GestureRecognition gestureRecognition;
 			leftHandDetectResult = gestureRecognition.RecognizeProcess(singleGesturePoints);
+
+			singleGesturePoints.clear();
+			singleGesturePoints.shrink_to_fit();
 			//std::cout << "左手手势识别结果：" << leftHandDetectResult << std::endl;
 		}
 	}
@@ -272,8 +290,10 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 			GestureRecognition gestureRecognition;
 			rightHandDetectResult = gestureRecognition.RecognizeProcess(singleGesturePoints);
+			
+			singleGesturePoints.clear();
+			singleGesturePoints.shrink_to_fit();
 			//std::cout << "右手手势识别结果：" << rightHandDetectResult << std::endl;
-
 		}
 	}
 	detect_result[3] = rightHandDetectResult;
