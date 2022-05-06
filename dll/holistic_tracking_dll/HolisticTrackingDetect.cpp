@@ -118,21 +118,33 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_InitGraph(
 	return absl::OkStatus();
 }
 
-absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGraph_Direct(int image_width, int image_height, void* image_data, int* detect_result, bool show_result_image)
+absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGraph_Direct(
+	int image_width,
+	int image_height, 
+	void* image_data, 
+	int* detect_result, 
+	bool show_result_image
+)
 {
 	/*----- 1 构造cv::Mat对象 -----*/
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3, (uchar*)image_data);
-	cv::cvtColor(camera_frame, camera_frame, cv::COLOR_BGR2RGB);
-	// 水平翻转输入图像
-	cv::flip(camera_frame, camera_frame, 1);
+	
+	// BGR转RGB
+	cv::Mat camera_frame_RGB;
+	cv::cvtColor(camera_frame, camera_frame_RGB, cv::COLOR_BGR2RGB);
+
+	// 水平翻转
+	cv::flip(camera_frame_RGB, camera_frame_RGB, 1);
+
 	//std::cout << "cv::Mat对象构建完成" << std::endl;
 
 	/*----- 2 将OpenCV Mat转换为ImageFrame -----*/
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
-		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
+		mediapipe::ImageFormat::SRGB, camera_frame_RGB.cols, camera_frame_RGB.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-	//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-	//camera_frame.copyTo(input_frame_mat);
+	
+	camera_frame_RGB.copyTo(mediapipe::formats::MatView(input_frame.get()));
+	
 	//std::cout << "将OpenCV Mat转换为ImageFrame完成" << std::endl;
 
 	/*----- 3 发送图片到图中推理 -----*/
@@ -147,13 +159,15 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	/*----- 4 得到结果 -----*/
 
 	// 1 视频输出结果帧
-	mediapipe::Packet packet;
-	if (!m_pVideoPoller->Next(&packet))
-	{
-		return absl::InvalidArgumentError("no next packet");
-	}
 	if (show_result_image)
 	{
+		mediapipe::Packet packet;
+
+		if (!m_pVideoPoller->Next(&packet))
+		{
+			return absl::InvalidArgumentError("no next packet");
+		}
+
 		// 从视频输出获取mediapipe::ImageFrame结果
 		auto& output_frame = packet.Get<mediapipe::ImageFrame>();
 
@@ -162,10 +176,7 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 
 		// 显示cv::Mat结果
 		cv::cvtColor(output_frame_mat, output_frame_mat, cv::COLOR_RGB2BGR);
-		cv::Mat dst;
-		cv::resize(output_frame_mat, dst, cv::Size(output_frame_mat.cols, output_frame_mat.rows));
-		cv::imshow("MediapipeHolistic", dst);
-		cv::waitKey(1);
+		cv::imshow("MediapipeHolistic", output_frame_mat);
 	}
 
 	// 2 PoseLandmarks
@@ -309,16 +320,16 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 		if (camera_frame_raw.empty())
 			break;
 
-		cv::Mat camera_frame;
-		cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGB);
-		cv::flip(camera_frame, camera_frame, 1);
+		cv::Mat camera_frame_RGB;
+		cv::cvtColor(camera_frame_raw, camera_frame_RGB, cv::COLOR_BGR2RGB);
+		cv::flip(camera_frame_RGB, camera_frame_RGB, 1);
 
 		// 将OpenCV Mat转换为ImageFrame
 		auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
-			mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
+			mediapipe::ImageFormat::SRGB, camera_frame_RGB.cols, camera_frame_RGB.rows,
 			mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-		//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-		//camera_frame.copyTo(input_frame_mat);
+
+		camera_frame_RGB.copyTo(mediapipe::formats::MatView(input_frame.get()));
 
 		// 发送图片到图中推理
 		size_t frame_timestamp_us =

@@ -138,16 +138,21 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 {
 	// 构造cv::Mat对象
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3,(uchar*)image_data);
-	cv::cvtColor(camera_frame, camera_frame, cv::COLOR_BGR2RGB);
-	cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+
+	// BGR转RGB
+	cv::Mat camera_frame_RGB;
+	cv::cvtColor(camera_frame, camera_frame_RGB, cv::COLOR_BGR2RGB);
+
+	// 水平翻转
+	cv::flip(camera_frame_RGB, camera_frame_RGB, /*flipcode=HORIZONTAL*/ 1);
 	//std::cout << "图片构建完成" << std::endl;
 
 	// Wrap Mat into an ImageFrame.
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
-		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
+		mediapipe::ImageFormat::SRGB, camera_frame_RGB.cols, camera_frame_RGB.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-	//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-	//camera_frame.copyTo(input_frame_mat);
+	camera_frame_RGB.copyTo(mediapipe::formats::MatView(input_frame.get()));
+
 	//std::cout << "Wrap Mat into an ImageFrame." << std::endl;
 
 	// Send image packet into the graph.
@@ -240,16 +245,22 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 {
 	// 构造cv::Mat对象
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3, (uchar*)image_data);
-	cv::cvtColor(camera_frame, camera_frame, cv::COLOR_BGR2RGB);
-	cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+
+	// BGR转RGB
+	cv::Mat camera_frame_RGB;
+	cv::cvtColor(camera_frame, camera_frame_RGB, cv::COLOR_BGR2RGB);
+
+	// 水平翻转
+	cv::flip(camera_frame_RGB, camera_frame_RGB, /*flipcode=HORIZONTAL*/ 1);
 	//std::cout << "图片构建完成" << std::endl;
 
 	// Wrap Mat into an ImageFrame.
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
-		mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
+		mediapipe::ImageFormat::SRGB, camera_frame_RGB.cols, camera_frame_RGB.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-	//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-	//camera_frame.copyTo(input_frame_mat);
+
+	camera_frame_RGB.copyTo(mediapipe::formats::MatView(input_frame.get()));
+
 	//std::cout << "Wrap Mat into an ImageFrame." << std::endl;
 
 	// Send image packet into the graph.
@@ -342,16 +353,16 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 		if (camera_frame_raw.empty())
 			break;
 
-		cv::Mat camera_frame;
-		cv::cvtColor(camera_frame_raw, camera_frame, cv::COLOR_BGR2RGB);
-		cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+		cv::Mat camera_frame_RGB;
+		cv::cvtColor(camera_frame_raw, camera_frame_RGB, cv::COLOR_BGR2RGB);
+		cv::flip(camera_frame_RGB, camera_frame_RGB, /*flipcode=HORIZONTAL*/ 1);
 
 		// Wrap Mat into an ImageFrame.
 		auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
-			mediapipe::ImageFormat::SRGB, camera_frame.cols, camera_frame.rows,
+			mediapipe::ImageFormat::SRGB, camera_frame_RGB.cols, camera_frame_RGB.rows,
 			mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-		//cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
-		//camera_frame.copyTo(input_frame_mat);
+
+		camera_frame_RGB.copyTo(mediapipe::formats::MatView(input_frame.get()));
 
 		// Send image packet into the graph.
 		size_t frame_timestamp_us =
@@ -387,8 +398,8 @@ absl::Status GoogleMediapipeHandTrackingDetect::HandTrackingDetect::Mediapipe_Ru
 					{
 						PoseInfo info;
 						const mediapipe::NormalizedLandmark landmark = single_hand_NormalizedLandmarkList.landmark(i);
-						info.x = landmark.x() * camera_frame.cols;
-						info.y = landmark.y() * camera_frame.rows;
+						info.x = landmark.x() * camera_frame_RGB.cols;
+						info.y = landmark.y() * camera_frame_RGB.rows;
 						singleHandGestureInfo.push_back(info);
 						hand_landmarks.push_back(info);
 					}
