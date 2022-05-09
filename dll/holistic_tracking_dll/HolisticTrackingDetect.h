@@ -58,9 +58,6 @@ namespace GoogleMediapipeDetect {
 		std::unique_ptr<mediapipe::OutputStreamPoller> m_pLeftHandLandmarksPoller;
 		std::unique_ptr<mediapipe::OutputStreamPoller> m_pRightHandLandmarksPoller;
 		std::unique_ptr<mediapipe::OutputStreamPoller> m_pFaceLandmarksPoller;
-
-		bool m_bIsFirstTimeExecute;
-		std::chrono::system_clock::time_point m_Mediapipe_RunMPPGraph_Direct_Start_Time;
 	};
 }
 

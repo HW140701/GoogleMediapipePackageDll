@@ -22,8 +22,6 @@ GoogleMediapipeDetect::HolisticTrackingDetect::HolisticTrackingDetect()
 	m_pLeftHandLandmarksPoller = nullptr;
 	m_pRightHandLandmarksPoller = nullptr;
 	m_pFaceLandmarksPoller = nullptr;
-
-	m_bIsFirstTimeExecute = true;
 }
 
 GoogleMediapipeDetect::HolisticTrackingDetect::~HolisticTrackingDetect()
@@ -128,13 +126,6 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	bool show_result_image
 )
 {
-	// 如果该函数第一次执行则存储该函数第一次执行时的时间
-	if(m_bIsFirstTimeExecute)
-	{
-		m_Mediapipe_RunMPPGraph_Direct_Start_Time = std::chrono::system_clock::now();
-		m_bIsFirstTimeExecute = false;
-	}
-
 	/*----- 1 构造cv::Mat对象 -----*/
 	cv::Mat camera_frame(cv::Size(image_width, image_height), CV_8UC3, (uchar*)image_data);
 	
@@ -151,20 +142,20 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
 		mediapipe::ImageFormat::SRGB, camera_frame_RGB.cols, camera_frame_RGB.rows,
 		mediapipe::ImageFrame::kDefaultAlignmentBoundary);
-	
-	camera_frame_RGB.copyTo(mediapipe::formats::MatView(input_frame.get()));
-	
+	//camera_frame_RGB.copyTo(mediapipe::formats::MatView(input_frame.get()));
+	cv::Mat input_frame_mat = mediapipe::formats::MatView(input_frame.get());
+	camera_frame_RGB.copyTo(input_frame_mat);
+
 	//std::cout << "将OpenCV Mat转换为ImageFrame完成" << std::endl;
 
 	/*----- 3 发送图片到图中推理 -----*/
-	// size_t frame_timestamp_us =
-	// 	(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
-	auto frame_timestamp_end = std::chrono::system_clock::now();
-	size_t frame_timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(frame_timestamp_end - m_Mediapipe_RunMPPGraph_Direct_Start_Time).count();
+	size_t frame_timestamp_us =
+	 	(double)cv::getTickCount() / (double)cv::getTickFrequency() * 1e6;
 
 	MP_RETURN_IF_ERROR(m_Graph.AddPacketToInputStream(
 		m_Video_InputStreamName, mediapipe::Adopt(input_frame.release())
 		.At(mediapipe::Timestamp(frame_timestamp_us))));
+
 	//std::cout << "发送图片到图中推理完成" << std::endl;
 
 	/*----- 4 得到结果 -----*/
@@ -298,23 +289,23 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 	}
 	detect_result[3] = rightHandDetectResult;
 
-	// 4 FaceLandmarks
-	//mediapipe::Packet faceLandmarksPacket;
-	//if (m_pFaceLandmarksPoller->QueueSize() > 0)
-	//{
-	//	if (m_pFaceLandmarksPoller->Next(&faceLandmarksPacket))
-	//	{
-	//		auto& output_landmarks = faceLandmarksPacket.Get<mediapipe::NormalizedLandmarkList>();
-	//		std::cout << "FaceLandmarks size:" << output_landmarks.landmark_size() << std::endl;
+	// // 4 FaceLandmarks
+	// mediapipe::Packet faceLandmarksPacket;
+	// if (m_pFaceLandmarksPoller->QueueSize() > 0)
+	// {
+	// 	if (m_pFaceLandmarksPoller->Next(&faceLandmarksPacket))
+	// 	{
+	// 		auto& output_landmarks = faceLandmarksPacket.Get<mediapipe::NormalizedLandmarkList>();
+	// 		std::cout << "FaceLandmarks size:" << output_landmarks.landmark_size() << std::endl;
 
-	//		for (int i = 0; i < output_landmarks.landmark_size(); ++i)
-	//		{
-	//			const mediapipe::NormalizedLandmark landmark = output_landmarks.landmark(i);
-	//			float x = landmark.x() * camera_frame.cols;
-	//			float y = landmark.y() * camera_frame.rows;
-	//		}
-	//	}
-	//}
+	// 		for (int i = 0; i < output_landmarks.landmark_size(); ++i)
+	// 		{
+	// 			const mediapipe::NormalizedLandmark landmark = output_landmarks.landmark(i);
+	// 			float x = landmark.x() * camera_frame.cols;
+	// 			float y = landmark.y() * camera_frame.rows;
+	// 		}
+	// 	}
+	// }
 
 	return absl::OkStatus();
 }
@@ -388,11 +379,6 @@ absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_RunMPPGrap
 absl::Status GoogleMediapipeDetect::HolisticTrackingDetect::Mediapipe_ReleaseGraph()
 {
 	MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_Video_InputStreamName));
-	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_Video_OutputStreamName));
-	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_PoseLandmarks_OutputStreamName));
-	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_LeftHandLandmarks_OutputStreamName));
-	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_RightHandLandmarks_OutputStreamName));
-	//MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_FaceLandmarks_OutputStreamName));
 
 	return m_Graph.WaitUntilDone();
 }
