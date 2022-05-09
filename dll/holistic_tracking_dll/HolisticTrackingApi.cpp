@@ -5,9 +5,14 @@ using namespace GoogleMediapipeDetect;
 
 HolisticTrackingDetect m_HolisticTrackingDetect;
 
-EXPORT_API int MediapipeHolisticTrackingInit(const char* model_path)
+EXPORT_API int MediapipeHolisticTrackingInit(
+	const char* model_path,
+	bool is_need_video_outputstream,
+	bool is_need_pose_outputstream,
+	bool is_need_hand_outputstream,
+	bool is_need_face_outputstream)
 {
-	return m_HolisticTrackingDetect.InitModel(model_path);
+	return m_HolisticTrackingDetect.InitModel(model_path,is_need_video_outputstream,is_need_pose_outputstream,is_need_hand_outputstream,is_need_face_outputstream);
 }
 
 EXPORT_API int MediapipeHolisticTrackingDetectFrameDirect(int image_width, int image_height, void* image_data, int* detect_result, bool show_result_image)

@@ -33,11 +33,20 @@ extern "C" {
 	/*
 	@brief 初始化Google Mediapipe
 	@param[in] model_path 需要加载的模型路径
+	@param[in] is_need_video_outputstream 是否在Graph中添加视频输出流
+	@param[in] is_need_pose_outputstream 是否在Graph中添加pose输出流
+	@param[in] is_need_hand_outputstream 是否在Graph中添加hand输出流
+	@param[in] is_need_face_outputstream 是否在Graph中添加face输出流
 	@return 返回操作成功或者失败
 		0 失败
 		1 成功
 	*/
-	EXPORT_API int MediapipeHolisticTrackingInit(const char* model_path);
+	EXPORT_API int MediapipeHolisticTrackingInit(
+		const char* model_path,
+		bool is_need_video_outputstream = true,
+		bool is_need_pose_outputstream = true,
+		bool is_need_hand_outputstream = true,
+		bool is_need_face_outputstream = true);
 
 	/*
 	@brief 检测视频帧

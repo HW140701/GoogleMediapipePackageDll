@@ -27,13 +27,21 @@ namespace GoogleMediapipeDetect {
 		virtual~HolisticTrackingDetect();
 
 	public:
-		int InitModel(const char* model_path);
+		int InitModel(const char* model_path,
+			bool is_need_video_outputstream = true,
+			bool is_need_pose_outputstream = true,
+			bool is_need_hand_outputstream = true,
+			bool is_need_face_outputstream = true);
 		int DetectImageDirect(int image_width, int image_height, void* image_data ,int* detect_result,bool show_result_image = false);
 		int DetectCamera(bool show_image = false);
 		int Release();
 
 	private:
-		absl::Status Mediapipe_InitGraph(const char* model_path);
+		absl::Status Mediapipe_InitGraph(const char* model_path,
+			bool is_need_video_outputstream = true,
+			bool is_need_pose_outputstream = true,
+			bool is_need_hand_outputstream = true,
+			bool is_need_face_outputstream = true);
 		absl::Status Mediapipe_RunMPPGraph_Direct(int image_width, int image_height, void* image_data, int* detect_result, bool show_result_image = false);
 		absl::Status Mediapipe_RunMPPGraph_Camera(bool show_image = false);
 		absl::Status Mediapipe_ReleaseGraph();

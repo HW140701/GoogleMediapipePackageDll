@@ -4,7 +4,7 @@
 #include "DynamicModuleLoader.h"
 using namespace DynamicModuleLoaderSpace;
 
-typedef int (*FuncMediapipeHolisticTrackingInit)(const char* model_path);
+typedef int (*FuncMediapipeHolisticTrackingInit)(const char* model_path, bool is_need_video_outputstream, bool is_need_pose_outputstream, bool is_need_hand_outputstream, bool is_need_face_outputstream);
 typedef int (*FuncMediapipeHolisticTrackingDetectFrameDirect)(int image_width, int image_height, void* image_data, int* detect_result, bool show_result_image);
 typedef int (*FuncMediapipeHolisticTrackingDetectCamera)(bool show_image);
 typedef int (*FuncMediapipeHolisticTrackingRelease)();

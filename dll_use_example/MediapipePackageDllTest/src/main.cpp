@@ -266,7 +266,7 @@ void HolisticTrackingDllTest()
 	std::string mediapipe_holistic_tracking_model_path = "./holistic_tracking_cpu.pbtxt";
 #endif // _DEBUG
 
-	if (mediapipeHolisticTrackingDll.m_MediapipeHolisticTrackingInit(mediapipe_holistic_tracking_model_path.c_str()))
+	if (mediapipeHolisticTrackingDll.m_MediapipeHolisticTrackingInit(mediapipe_holistic_tracking_model_path.c_str(),true,true,true,true))
 	{
 		std::cout << "初始化模型成功" << std::endl;
 	}
